@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" >
+  <xs:element name="level">
+    <xs:complexType>
+      <xs:attribute name="value" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="contextListener" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="resetJUL" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+            <xs:attribute name="class" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="appender" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="encoder" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="pattern" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" />
+            <xs:attribute name="class" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="logger" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="level" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="root" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="level" minOccurs="0" maxOccurs="unbounded" />
+              <xs:element name="appender-ref" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="ref" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="scan" type="xs:string" />
+      <xs:attribute name="scanPeriod" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="level" />
+        <xs:element ref="configuration" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

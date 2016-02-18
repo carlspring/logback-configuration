@@ -1,5 +1,6 @@
 package org.carlspring.logging.services;
 
+
 /**
  * @author mtodorov
  */
@@ -11,9 +12,8 @@ public interface LoggingManagementService
     // TODO:
 
 
-   int getStatus();
+    void addAppender();
 
-   void addLogger(String loggerPackage, String level);
-   void updateLogger(String loggerPackage, String level);
-   void deleteLogger(String loggerPackage);
+    void removeAppender();
+
 }

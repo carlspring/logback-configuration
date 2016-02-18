@@ -32,14 +32,6 @@ public class LoggingRestlet
         logger.debug("DELETE: " + logger);
 
         // TODO: Implement
-        
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        Appender<ILoggingEvent> appender = root.getAppender("CONSOLE");
-        
-        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-        log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
-        log.setAdditive(false); /* set to true if root should log too */
-        log.addAppender(appender);
 
         return Response.ok().build();
     }
@@ -52,8 +44,6 @@ public class LoggingRestlet
         logger.debug("Updating logger: " + logger);
 
         // TODO: Implement
-        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-        log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
 
         return Response.ok().build();
     }
@@ -66,8 +56,6 @@ public class LoggingRestlet
         logger.debug("Deleting logger: " + logger);
 
         // TODO: Implement
-        ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-        log.setLevel(ch.qos.logback.classic.Level.toLevel("off".toUpperCase()));
 
         return Response.ok().build();
     }

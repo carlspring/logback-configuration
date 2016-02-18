@@ -32,8 +32,9 @@ public class LoggingRestlet
         logger.debug("DELETE: " + logger);
 
         // TODO: Implement
+        loggingManagementService.addLogger(loggerPackage, level);
 
-        return Response.ok().build();
+        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
     }
 
     @POST
@@ -44,8 +45,9 @@ public class LoggingRestlet
         logger.debug("Updating logger: " + logger);
 
         // TODO: Implement
-
-        return Response.ok().build();
+        loggingManagementService.updateLogger(loggerPackage, level);
+        
+        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
     }
 
     @DELETE
@@ -56,8 +58,9 @@ public class LoggingRestlet
         logger.debug("Deleting logger: " + logger);
 
         // TODO: Implement
-
-        return Response.ok().build();
+        loggingManagementService.deleteLogger(loggerPackage);
+        
+        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
     }
 
 }

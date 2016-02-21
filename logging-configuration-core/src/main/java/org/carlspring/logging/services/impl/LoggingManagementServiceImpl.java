@@ -12,12 +12,12 @@ public class LoggingManagementServiceImpl
 {
 	private int status;
 	
-	public int getStatus() 
+	public synchronized int getStatus() 
 	{
 		return status;
 	}
 	
-    public void addLogger(String loggerPackage, String level) 
+    public synchronized void addLogger(String loggerPackage, String level) 
     {
     	if(!isValidPackage(loggerPackage)) 
     	{
@@ -38,7 +38,7 @@ public class LoggingManagementServiceImpl
     	}
     }
     
-    public void updateLogger(String loggerPackage, String level) 
+    public synchronized void updateLogger(String loggerPackage, String level) 
     {
     	if(!isValidPackage(loggerPackage)) 
     	{
@@ -60,7 +60,7 @@ public class LoggingManagementServiceImpl
     	}
     }
     
-    public void deleteLogger(String loggerPackage) 
+    public synchronized void deleteLogger(String loggerPackage) 
     {
     	if(!isValidPackage(loggerPackage)) 
     	{

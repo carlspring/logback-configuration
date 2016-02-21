@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 public class LoggingManagementServiceImpl
         implements LoggingManagementService
 {
+	private Object lock = new Object();
+	
 	private int status;
 	
 	public synchronized int getStatus() 
@@ -17,64 +19,75 @@ public class LoggingManagementServiceImpl
 		return status;
 	}
 	
-    public synchronized void addLogger(String loggerPackage, String level) 
+    public void addLogger(String loggerPackage, String level) 
     {
-    	if(!isValidPackage(loggerPackage)) 
+    	synchronized(lock) 
     	{
-    		status = 400;
-    	} else if(!isValidLevel(level)) 
-    	{
-    		status = 400;
-    	} else 
-    	{
-        	ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-            ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> appender = root.getAppender("CONSOLE");
-            
-            ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-            log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
-            log.setAdditive(false); /* set to true if root should log too */
-            log.addAppender(appender);
-    		status = 200;
+        	if(!isValidPackage(loggerPackage)) 
+        	{
+        		status = 400;
+        	} 
+        	else if(!isValidLevel(level)) 
+        	{
+        		status = 400;
+        	} 
+        	else 
+        	{
+            	ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+                ch.qos.logback.core.Appender<ch.qos.logback.classic.spi.ILoggingEvent> appender = root.getAppender("CONSOLE");
+                
+                ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
+                log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
+                log.setAdditive(false); /* set to true if root should log too */
+                log.addAppender(appender);
+        		status = 200;
+        	}
     	}
     }
     
-    public synchronized void updateLogger(String loggerPackage, String level) 
+    public void updateLogger(String loggerPackage, String level) 
     {
-    	if(!isValidPackage(loggerPackage)) 
+    	synchronized(lock) 
     	{
-    		status = 400;
-    	} 
-    	else if(!isValidLevel(level)) 
-    	{
-    		status = 400;
-    	} 
-    	else if(!isPackageLoggerExists(loggerPackage)) 
-    	{
-    		status = 404;
-    	} 
-    	else 
-    	{
-	    	ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-	        log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
-    		status = 200;
+	    	if(!isValidPackage(loggerPackage)) 
+	    	{
+	    		status = 400;
+	    	} 
+	    	else if(!isValidLevel(level)) 
+	    	{
+	    		status = 400;
+	    	} 
+	    	else if(!isPackageLoggerExists(loggerPackage)) 
+	    	{
+	    		status = 404;
+	    	} 
+	    	else 
+	    	{
+		    	ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
+		        log.setLevel(ch.qos.logback.classic.Level.toLevel(level.toUpperCase()));
+	    		status = 200;
+	    	}
     	}
     }
     
-    public synchronized void deleteLogger(String loggerPackage) 
+    public void deleteLogger(String loggerPackage) 
     {
-    	if(!isValidPackage(loggerPackage)) 
+    	synchronized(lock) 
     	{
-    		status = 400;
-    	} 
-    	else if(!isPackageLoggerExists(loggerPackage)) 
-    	{
-    		status = 404;
-    	}
-    	else 
-    	{
-	    	ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
-	        log.setLevel(ch.qos.logback.classic.Level.toLevel("off".toUpperCase()));
-    		status = 200;
+	    	if(!isValidPackage(loggerPackage)) 
+	    	{
+	    		status = 400;
+	    	} 
+	    	else if(!isPackageLoggerExists(loggerPackage)) 
+	    	{
+	    		status = 404;
+	    	}
+	    	else 
+	    	{
+		    	ch.qos.logback.classic.Logger log = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerPackage);
+		        log.setLevel(ch.qos.logback.classic.Level.toLevel("off".toUpperCase()));
+	    		status = 200;
+	    	}
     	}
     }
 	

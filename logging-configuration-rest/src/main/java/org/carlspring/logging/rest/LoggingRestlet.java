@@ -1,6 +1,8 @@
 package org.carlspring.logging.rest;
 
 import org.carlspring.logging.services.LoggingManagementService;
+import org.carlspring.logging.exceptions.LoggingConfigurationException;
+import org.carlspring.logging.exceptions.NoLoggerFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,16 @@ public class LoggingRestlet
         logger.debug("DELETE: " + logger);
 
         // TODO: Implement
-        loggingManagementService.addLogger(loggerPackage, level);
+        try
+        {
+            loggingManagementService.addLogger(loggerPackage, level);
+        }
+        catch (LoggingConfigurationException ex) 
+        {
+            return Response.ok(Response.status(400)).build();
+        }
 
-        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
+        return Response.ok(Response.status(200)).build();
     }
 
     @POST
@@ -45,9 +54,20 @@ public class LoggingRestlet
         logger.debug("Updating logger: " + logger);
 
         // TODO: Implement
-        loggingManagementService.updateLogger(loggerPackage, level);
-        
-        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
+        try
+        {
+            loggingManagementService.updateLogger(loggerPackage, level);
+        }
+        catch (LoggingConfigurationException ex) 
+        {
+            return Response.ok(Response.status(400)).build();
+        }
+        catch (NoLoggerFoundException ex) 
+        {
+            return Response.ok(Response.status(404)).build();
+        }
+
+        return Response.ok(Response.status(200)).build();
     }
 
     @DELETE
@@ -58,9 +78,20 @@ public class LoggingRestlet
         logger.debug("Deleting logger: " + logger);
 
         // TODO: Implement
-        loggingManagementService.deleteLogger(loggerPackage);
-        
-        return Response.ok(Response.status(loggingManagementService.getStatus())).build();
+        try
+        {
+            loggingManagementService.deleteLogger(loggerPackage);
+        }
+        catch (LoggingConfigurationException ex) 
+        {
+            return Response.ok(Response.status(400)).build();
+        }
+        catch (NoLoggerFoundException ex) 
+        {
+            return Response.ok(Response.status(404)).build();
+        }
+
+        return Response.ok(Response.status(200)).build();
     }
 
 }

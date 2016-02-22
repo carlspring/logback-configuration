@@ -1,19 +1,25 @@
 package org.carlspring.logging.services;
 
+import org.carlspring.logging.services.LoggingManagementService;
+import org.carlspring.logging.exceptions.LoggingConfigurationException;
+import org.carlspring.logging.exceptions.NoLoggerFoundException;
+
 /**
  * @author mtodorov
  */
-public interface LoggingManagementService
+public interface LoggingManagementService 
 {
 
-    // TODO:
-    // TODO: Add methods with proper parameters here. These are just examples.
-    // TODO:
+	// TODO:
+	// TODO: Add methods with proper parameters here. These are just examples.
+	// TODO:
 
+	void addLogger(String loggerPackage, String level) 
+			throws LoggingConfigurationException;
 
-   int getStatus();
+	void updateLogger(String loggerPackage, String level) 
+			throws LoggingConfigurationException, NoLoggerFoundException;
 
-   void addLogger(String loggerPackage, String level);
-   void updateLogger(String loggerPackage, String level);
-   void deleteLogger(String loggerPackage);
+	void deleteLogger(String loggerPackage) 
+			throws LoggingConfigurationException, NoLoggerFoundException;
 }

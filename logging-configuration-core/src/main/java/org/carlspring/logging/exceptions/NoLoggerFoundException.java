@@ -1,7 +1,8 @@
 package org.carlspring.logging.exceptions;
 
 /**
- * @author carlspring
+ * 
+ * @author Yougeshwar
  */
 public class NoLoggerFoundException
         extends Exception

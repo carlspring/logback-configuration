@@ -14,6 +14,7 @@ import java.io.IOException;
 
 /**
  * @author Martin Todorov
+ * @author Yougeshwar
  */
 @Component
 @Path("/logging")
@@ -40,10 +41,10 @@ public class LoggingRestlet
         }
         catch (LoggingConfigurationException ex) 
         {
-            return Response.ok(Response.status(400)).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
 
-        return Response.ok(Response.status(200)).build();
+        return Response.ok().build();
     }
 
     @POST
@@ -60,14 +61,14 @@ public class LoggingRestlet
         }
         catch (LoggingConfigurationException ex) 
         {
-            return Response.ok(Response.status(400)).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
         catch (NoLoggerFoundException ex) 
         {
-            return Response.ok(Response.status(404)).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
 
-        return Response.ok(Response.status(200)).build();
+        return Response.ok().build();
     }
 
     @DELETE
@@ -84,14 +85,14 @@ public class LoggingRestlet
         }
         catch (LoggingConfigurationException ex) 
         {
-            return Response.ok(Response.status(400)).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
         catch (NoLoggerFoundException ex) 
         {
-            return Response.ok(Response.status(404)).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
 
-        return Response.ok(Response.status(200)).build();
+        return Response.ok().build();
     }
 
 }

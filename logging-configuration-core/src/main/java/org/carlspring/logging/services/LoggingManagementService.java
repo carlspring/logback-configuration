@@ -5,7 +5,9 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.exceptions.NoLoggerFoundException;
 
 /**
+ * 
  * @author mtodorov
+ * @author Yougeshwar
  */
 public interface LoggingManagementService 
 {

@@ -3,6 +3,7 @@ package org.carlspring.logging.services.impl;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.exceptions.NoLoggerFoundException;
+import org.carlspring.logging.utils.LogBackXMLUtils;
 
 import java.util.List;
 import java.util.Arrays;
@@ -50,6 +51,8 @@ public class LoggingManagementServiceImpl
                 log.setLevel(Level.toLevel(level.toUpperCase()));
                 log.setAdditive(false); /* set to true if root should log too */
                 log.addAppender(appender);
+
+                LogBackXMLUtils.addLogger(loggerPackage, level);
         	}
     	}
     }
@@ -75,6 +78,8 @@ public class LoggingManagementServiceImpl
 	    	{
 		    	Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel(level.toUpperCase()));
+		        
+	            LogBackXMLUtils.updateLogger(loggerPackage, level);
 	    	}
     	}
     }
@@ -96,6 +101,8 @@ public class LoggingManagementServiceImpl
 	    	{
 		    	Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel("off".toUpperCase()));
+
+                LogBackXMLUtils.deleteLogger(loggerPackage);
 	    	}
     	}
     }

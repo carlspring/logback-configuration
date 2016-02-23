@@ -21,8 +21,6 @@ import java.io.IOException;
 public class LoggingRestlet
 {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoggingRestlet.class);
-
     @Autowired
     private LoggingManagementService loggingManagementService;
 
@@ -32,9 +30,6 @@ public class LoggingRestlet
     public Response addLogger(@QueryParam("logger") String loggerPackage,
                               @QueryParam("level") String level)
     {
-        logger.debug("DELETE: " + logger);
-
-        // TODO: Implement
         try
         {
             loggingManagementService.addLogger(loggerPackage, level);
@@ -52,9 +47,6 @@ public class LoggingRestlet
     public Response updateLogger(@QueryParam("logger") String loggerPackage,
                                  @QueryParam("level") String level)
     {
-        logger.debug("Updating logger: " + logger);
-
-        // TODO: Implement
         try
         {
             loggingManagementService.updateLogger(loggerPackage, level);
@@ -76,9 +68,6 @@ public class LoggingRestlet
     public Response delete(@QueryParam("logger") String loggerPackage)
             throws IOException
     {
-        logger.debug("Deleting logger: " + logger);
-
-        // TODO: Implement
         try
         {
             loggingManagementService.deleteLogger(loggerPackage);

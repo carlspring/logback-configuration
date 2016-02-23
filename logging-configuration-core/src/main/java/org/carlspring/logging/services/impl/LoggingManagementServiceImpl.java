@@ -76,7 +76,7 @@ public class LoggingManagementServiceImpl
         	{
         		throw new LoggingConfigurationException("Invalid level exception");
         	} 
-	    	else if(!isPackageLoggerExists(loggerPackage)) 
+	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
 	    		throw new NoLoggerFoundException("Logger not found exception");
 	        } 
@@ -100,7 +100,7 @@ public class LoggingManagementServiceImpl
 	    	{
 	    		throw new LoggingConfigurationException("Invalid package exception");
 	    	} 
-	    	else if(!isPackageLoggerExists(loggerPackage)) 
+	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
 	    		throw new NoLoggerFoundException("Logger not found exception");
 	    	}
@@ -115,7 +115,7 @@ public class LoggingManagementServiceImpl
     	}
     }
 	
-    private boolean isPackageLoggerExists(String packageLogger) 
+    private boolean packageLoggerExists(String packageLogger) 
     {
     	LoggerContext lc = (LoggerContext) 
     			LoggerFactory.getILoggerFactory();

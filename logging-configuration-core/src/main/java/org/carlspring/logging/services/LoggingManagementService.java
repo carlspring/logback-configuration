@@ -11,11 +11,6 @@ import org.carlspring.logging.exceptions.NoLoggerFoundException;
  */
 public interface LoggingManagementService 
 {
-
-	// TODO:
-	// TODO: Add methods with proper parameters here. These are just examples.
-	// TODO:
-
 	void addLogger(String loggerPackage, String level) 
 			throws LoggingConfigurationException;
 

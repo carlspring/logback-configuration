@@ -21,13 +21,17 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
- * @author carlspring
+ * @author mtodorov
+ * @author Yougeshwar
  */
 @Service
 public class LoggingManagementServiceImpl
         implements LoggingManagementService
 {
 	private Object lock = new Object();
+	
+	private List<String> asList = 
+			Arrays.asList("ALL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF", "TRACE");
 	
     public void addLogger(String loggerPackage, String level) 
     		throws LoggingConfigurationException
@@ -36,18 +40,20 @@ public class LoggingManagementServiceImpl
     	{
         	if(!isValidPackage(loggerPackage)) 
         	{
-        		new LoggingConfigurationException("Invalid package exception");
+        		throw new LoggingConfigurationException("Invalid package exception");
         	} 
         	else if(!isValidLevel(level)) 
         	{
-        		new LoggingConfigurationException("Invalid level exception");
+        		throw new LoggingConfigurationException("Invalid level exception");
         	} 
         	else 
         	{
-            	Logger root = (Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
+            	Logger root = (Logger) 
+            			LoggerFactory.getLogger(ROOT_LOGGER_NAME);
                 ch.qos.logback.core.Appender<ILoggingEvent> appender = root.getAppender("CONSOLE");
                 
-                Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
+                Logger log = (Logger) 
+                		LoggerFactory.getLogger(loggerPackage);
                 log.setLevel(Level.toLevel(level.toUpperCase()));
                 log.setAdditive(false); /* set to true if root should log too */
                 log.addAppender(appender);
@@ -64,19 +70,20 @@ public class LoggingManagementServiceImpl
     	{
     		if(!isValidPackage(loggerPackage)) 
         	{
-        		new LoggingConfigurationException("Invalid package exception");
+        		throw new LoggingConfigurationException("Invalid package exception");
         	} 
         	else if(!isValidLevel(level)) 
         	{
-        		new LoggingConfigurationException("Invalid level exception");
+        		throw new LoggingConfigurationException("Invalid level exception");
         	} 
 	    	else if(!isPackageLoggerExists(loggerPackage)) 
 	    	{
-	    		new NoLoggerFoundException("Logger not found exception");
+	    		throw new NoLoggerFoundException("Logger not found exception");
 	        } 
 	    	else 
 	    	{
-		    	Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
+		    	Logger log = (Logger) 
+		    			LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel(level.toUpperCase()));
 		        
 	            LogBackXMLUtils.updateLogger(loggerPackage, level);
@@ -91,15 +98,16 @@ public class LoggingManagementServiceImpl
     	{
 	    	if(!isValidPackage(loggerPackage)) 
 	    	{
-	    		new LoggingConfigurationException("Invalid package exception");
+	    		throw new LoggingConfigurationException("Invalid package exception");
 	    	} 
 	    	else if(!isPackageLoggerExists(loggerPackage)) 
 	    	{
-	    		new NoLoggerFoundException("Logger not found exception");
+	    		throw new NoLoggerFoundException("Logger not found exception");
 	    	}
 	    	else 
 	    	{
-		    	Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
+		    	Logger log = (Logger) 
+		    			LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel("off".toUpperCase()));
 
                 LogBackXMLUtils.deleteLogger(loggerPackage);
@@ -109,10 +117,15 @@ public class LoggingManagementServiceImpl
 	
     private boolean isPackageLoggerExists(String s) 
     {
-    	LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    	LoggerContext lc = (LoggerContext) 
+    			LoggerFactory.getILoggerFactory();
+    	
         List<Logger> loggerList = lc.getLoggerList();
-        for (Logger logger : loggerList) {
-            if (logger.getName().equals(s)) {
+        
+        for (Logger logger : loggerList) 
+        {
+            if (logger.getName().equals(s)) 
+            {
             	return true;
             }
         }
@@ -121,7 +134,6 @@ public class LoggingManagementServiceImpl
 	
     private boolean isValidLevel(String s) 
     {
-    	List<String> asList = Arrays.asList("ALL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF", "TRACE");
         return asList.contains(s.toUpperCase());
     }
     

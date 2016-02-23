@@ -50,7 +50,7 @@ public class LoggingManagementServiceImpl
         	{
             	Logger root = (Logger) 
             			LoggerFactory.getLogger(ROOT_LOGGER_NAME);
-                ch.qos.logback.core.Appender<ILoggingEvent> appender = root.getAppender("CONSOLE");
+                Appender<ILoggingEvent> appender = root.getAppender("CONSOLE");
                 
                 Logger log = (Logger) 
                 		LoggerFactory.getLogger(loggerPackage);
@@ -115,7 +115,7 @@ public class LoggingManagementServiceImpl
     	}
     }
 	
-    private boolean isPackageLoggerExists(String s) 
+    private boolean isPackageLoggerExists(String packageLogger) 
     {
     	LoggerContext lc = (LoggerContext) 
     			LoggerFactory.getILoggerFactory();
@@ -124,7 +124,7 @@ public class LoggingManagementServiceImpl
         
         for (Logger logger : loggerList) 
         {
-            if (logger.getName().equals(s)) 
+            if (logger.getName().equals(packageLogger)) 
             {
             	return true;
             }
@@ -132,14 +132,14 @@ public class LoggingManagementServiceImpl
         return false;
     }
 	
-    private boolean isValidLevel(String s) 
+    private boolean isValidLevel(String level) 
     {
-        return asList.contains(s.toUpperCase());
+        return asList.contains(level.toUpperCase());
     }
     
-    private boolean isValidPackage(String s) 
+    private boolean isValidPackage(String pkg) 
     {
     	Pattern pattern = Pattern.compile("^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$");
-        return pattern.matcher(s).matches();
+        return pattern.matcher(pkg).matches();
     }
 }

@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations =
-{ "/META-INF/spring/spring-*-context.xml",
-        "classpath*:/META-INF/spring/spring-*-context.xml" })
+{ "/META-INF/spring/logging-*-context.xml",
+        "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class LoggerCoreTest
 {
     @Autowired

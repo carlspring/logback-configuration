@@ -1,8 +1,9 @@
 package org.carlspring.logging.services.impl;
 
 import org.carlspring.logging.services.LoggingManagementService;
+import org.carlspring.logging.exceptions.AppenderNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
-import org.carlspring.logging.exceptions.NoLoggerFoundException;
+import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.utils.LogBackXMLUtils;
 
 import java.util.List;
@@ -10,10 +11,9 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
-
 import org.slf4j.LoggerFactory;
-import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 
+import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.Appender;
@@ -33,8 +33,9 @@ public class LoggingManagementServiceImpl
 	private List<String> asList = 
 			Arrays.asList("ALL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF", "TRACE");
 	
-    public void addLogger(String loggerPackage, String level) 
-    		throws LoggingConfigurationException
+	@Override
+    public void addLogger(String loggerPackage, String level, String appenderName) 
+    		throws LoggingConfigurationException, AppenderNotFoundException
     {
     	synchronized(lock) 
     	{
@@ -50,7 +51,12 @@ public class LoggingManagementServiceImpl
         	{
             	Logger root = (Logger) 
             			LoggerFactory.getLogger(ROOT_LOGGER_NAME);
-                Appender<ILoggingEvent> appender = root.getAppender("CONSOLE");
+                Appender<ILoggingEvent> appender = root.getAppender(appenderName.toUpperCase());
+                
+                if(appender == null) 
+                {
+                    throw new AppenderNotFoundException("Appender not found exception");
+                }
                 
                 Logger log = (Logger) 
                 		LoggerFactory.getLogger(loggerPackage);
@@ -63,8 +69,9 @@ public class LoggingManagementServiceImpl
     	}
     }
     
+    @Override
     public void updateLogger(String loggerPackage, String level) 
-    		throws LoggingConfigurationException, NoLoggerFoundException
+    		throws LoggingConfigurationException, LoggerNotFoundException
     {
     	synchronized(lock) 
     	{
@@ -78,7 +85,7 @@ public class LoggingManagementServiceImpl
         	} 
 	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
-	    		throw new NoLoggerFoundException("Logger not found exception");
+	    		throw new LoggerNotFoundException("Logger not found exception");
 	        } 
 	    	else 
 	    	{
@@ -91,8 +98,9 @@ public class LoggingManagementServiceImpl
     	}
     }
     
+    @Override
     public void deleteLogger(String loggerPackage) 
-    		throws LoggingConfigurationException, NoLoggerFoundException 
+    		throws LoggingConfigurationException, LoggerNotFoundException 
     {
     	synchronized(lock) 
     	{
@@ -102,7 +110,7 @@ public class LoggingManagementServiceImpl
 	    	} 
 	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
-	    		throw new NoLoggerFoundException("Logger not found exception");
+	    		throw new LoggerNotFoundException("Logger not found exception");
 	    	}
 	    	else 
 	    	{

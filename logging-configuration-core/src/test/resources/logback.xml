@@ -2,34 +2,59 @@
 <!DOCTYPE configuration>
 <configuration scan="true" scanPeriod="30 seconds">
 
-    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-        <!-- reset all previous level configurations of all j.u.l. loggers -->
-        <resetJUL>true</resetJUL>
-    </contextListener>
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<!-- reset all previous level configurations of all j.u.l. loggers -->
+		<resetJUL>true</resetJUL>
+	</contextListener>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS dd-MM-yyyy} | %-5.5p | %-20.20t | %-50.50logger{50} | %m%n</pattern>
-        </encoder>
-    </appender>
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS dd-MM-yyyy} | %-5.5p | %-20.20t |
+				%-50.50logger{50} | %m%n</pattern>
+		</encoder>
+	</appender>
 
-    <logger name="org.springframework">
-        <level value="ERROR"/>
-    </logger>
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			
+			<!-- daily rollover. Make sure the path matches the one in the file element 
+				or else the rollover logs are placed in the working directory. -->
+			<fileNamePattern>log_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
-    <logger name="org.apache.commons.httpclient">
-        <level value="INFO"/>
-    </logger>
-    <logger name="org.carlspring.logging">
-        <level value="DEBUG"/>
-    </logger>
-    <logger name="org.glassfish.jersey">
-        <level value="DEBUG"/>
-    </logger>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>5MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
 
-    <root>
-        <level value="INFO"/>
-        <appender-ref ref="CONSOLE"/>
-    </root>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.springframework">
+		<level value="ERROR" />
+	</logger>
+
+	<logger name="org.apache.commons.httpclient">
+		<level value="INFO" />
+	</logger>
+	<logger name="org.carlspring.logging">
+		<level value="DEBUG" />
+	</logger>
+	<logger name="org.glassfish.jersey">
+		<level value="DEBUG" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE"/>
+	</root>
 
 </configuration>

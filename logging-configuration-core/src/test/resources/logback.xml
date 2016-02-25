@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration>
 <configuration scan="true" scanPeriod="30 seconds">
 
@@ -18,17 +18,12 @@
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>log.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			
-			<!-- daily rollover. Make sure the path matches the one in the file element 
-				or else the rollover logs are placed in the working directory. -->
 			<fileNamePattern>log_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				<maxFileSize>5MB</maxFileSize>
 			</timeBasedFileNamingAndTriggeringPolicy>
 			
-			<!-- keep 30 days' worth of history -->
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 

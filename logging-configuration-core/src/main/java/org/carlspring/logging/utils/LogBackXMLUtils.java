@@ -1,24 +1,24 @@
 package org.carlspring.logging.utils;
 
-import org.carlspring.logging.exceptions.LoggingConfigurationException;
-
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.FileWriter;
 import java.net.URL;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+
+import org.carlspring.logging.Appender;
+import org.carlspring.logging.AppenderRef;
+import org.carlspring.logging.Configuration;
+import org.carlspring.logging.Logger;
+import org.carlspring.logging.ObjectFactory;
+import org.carlspring.logging.exceptions.AppenderNotFoundException;
+import org.carlspring.logging.exceptions.LoggerNotFoundException;
+import org.carlspring.logging.exceptions.LoggingConfigurationException;
 
 /**
  *
@@ -26,192 +26,191 @@ import org.xml.sax.SAXException;
  */
 public class LogBackXMLUtils
 {
+    private static Configuration configuration;
 
-    public static void addLogger(String packageName, String level) 
+    static
+    {
+        try
+        {
+            configuration = unmarshalLogbackXML();
+        }
+        catch (LoggingConfigurationException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addLogger(String packageName, String levelName, String appenderName)
             throws LoggingConfigurationException
     {
         try
         {
-            URL url = LogBackXMLUtils.class.getClassLoader().getResource(
-                    "logback.xml");
-            File file = new File(url.toURI());
+            checkAppender(appenderName);
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory
-                    .newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(file);
+            ObjectFactory of = new ObjectFactory();
 
-            // Get the root element
-            Element root = doc.getDocumentElement();
+            Logger logger = of.createLogger();
+            logger.setName(packageName);
+            logger.setLevel(levelName);
 
-            Element loggerElement = doc.createElement("logger");
-            loggerElement.setAttribute("name", packageName);
+            AppenderRef rf = of.createAppenderRef();
+            rf.setRef(appenderName);
+            logger.getAppenderRefOrAny().add(rf);
 
-            root.appendChild(loggerElement);
+            configuration.getStatusListenerOrContextListenerOrInclude().add(
+                    new JAXBElement<Logger>(new QName("logger"), Logger.class, logger));
 
-            Element levelElement = doc.createElement("level");
-            levelElement.setAttribute("value", level);
-
-            loggerElement.appendChild(levelElement);
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory
-                    .newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(url.toURI()));
-            transformer.transform(source, result);
-        } 
-        catch (URISyntaxException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (ParserConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (SAXException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (IOException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerException ex)
+            marshalLogbackXML(configuration);
+        }
+        catch (Exception ex)
         {
             throw new LoggingConfigurationException(ex);
         }
     }
 
-    public static void updateLogger(String packageName, String level)
-            throws LoggingConfigurationException
+    public static void updateLogger(String packageName, String levelName) throws LoggingConfigurationException
     {
         try
         {
-            URL url = LogBackXMLUtils.class.getClassLoader().getResource(
-                    "logback.xml");
-            File file = new File(url.toURI());
+            Configuration configuration = unmarshalLogbackXML();
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory
-                    .newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(file);
+            Logger logger = getLogger(packageName);
+            logger.setName(packageName);
+            logger.setLevel(levelName);
 
-            // Get the root element
-            Element root = doc.getDocumentElement();
-            Element loggerElement = getElement(packageName,
-                    root.getElementsByTagName("logger"));
-            Element levelElement = (Element) loggerElement
-                    .getElementsByTagName("level").item(0);
-            levelElement.setAttribute("value", level);
-
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory
-                    .newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(url.toURI()));
-            transformer.transform(source, result);
-        } 
-        catch (URISyntaxException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (ParserConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (SAXException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (IOException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerException ex)
+            marshalLogbackXML(configuration);
+        }
+        catch (Exception ex)
         {
             throw new LoggingConfigurationException(ex);
         }
     }
 
-    public static void deleteLogger(String packageName)
-            throws LoggingConfigurationException
+    public static void deleteLogger(String packageName) throws LoggingConfigurationException
     {
         try
         {
-            URL url = LogBackXMLUtils.class.getClassLoader().getResource(
-                    "logback.xml");
-            File file = new File(url.toURI());
+            Configuration configuration = unmarshalLogbackXML();
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory
-                    .newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(file);
+            JAXBElement<Logger> logger = getLoggerJAXBElement(packageName);
 
-            // Get the root element
-            Element root = doc.getDocumentElement();
-            Element loggerElement = getElement(packageName,
-                    root.getElementsByTagName("logger"));
-            loggerElement.getParentNode().removeChild(loggerElement);
+            configuration.getStatusListenerOrContextListenerOrInclude().remove(logger);
 
-            // write the content into xml file
-            TransformerFactory transformerFactory = TransformerFactory
-                    .newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(url.toURI()));
-            transformer.transform(source, result);
-        } 
-        catch (URISyntaxException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (ParserConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (SAXException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (IOException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerConfigurationException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        } 
-        catch (TransformerException ex)
+            marshalLogbackXML(configuration);
+        }
+        catch (Exception ex)
         {
             throw new LoggingConfigurationException(ex);
         }
     }
 
-    private static Element getElement(String name, NodeList nodeList)
+    public static void checkAppender(String appenderName) throws AppenderNotFoundException
     {
-        if (nodeList == null)
-            return null;
-
-        for (int i = 0; i < nodeList.getLength(); i++)
+        List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
+        for (Object obj : list)
         {
-            Element el = (Element) nodeList.item(i);
-            if (el.hasAttribute("name") && el.getAttribute("name").equals(name))
+            JAXBElement<?> el = (JAXBElement<?>) obj;
+            if (!(el.getValue() instanceof Appender))
+                continue;
+
+            Appender appender = (Appender) el.getValue();
+            if (appender.getName().equals(appenderName))
             {
-                return el;
+                return;
             }
         }
+        throw new AppenderNotFoundException("Appender not found exception");
+    }
 
-        return null;
+    public static Logger getLogger(String packageName) throws LoggerNotFoundException
+    {
+        List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
+        for (Object obj : list)
+        {
+            JAXBElement<?> el = (JAXBElement<?>) obj;
+            if (!(el.getValue() instanceof Logger))
+                continue;
+
+            Logger logger = (Logger) el.getValue();
+            if (logger.getName().equals(packageName))
+            {
+                return logger;
+            }
+        }
+        throw new LoggerNotFoundException("Logger not found exception");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static JAXBElement<Logger> getLoggerJAXBElement(String packageName) throws LoggerNotFoundException
+    {
+        List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
+        for (Object obj : list)
+        {
+            JAXBElement<?> el = (JAXBElement<?>) obj;
+            if (!(el.getValue() instanceof Logger))
+                continue;
+
+            Logger logger = (Logger) el.getValue();
+            if (logger.getName().equals(packageName))
+            {
+                return (JAXBElement<Logger>) el;
+            }
+        }
+        throw new LoggerNotFoundException("Logger not found exception");
+    }
+
+    public static void marshalLogbackXML(Configuration configuration) throws LoggingConfigurationException
+    {
+        try
+        {
+            URL url = LogBackXMLUtils.class.getClassLoader().getResource("logback.xml");
+            File file = new File(url.toURI());
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            // jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+            // true);
+
+            FileWriter fw = null;
+            try
+            {
+                fw = new FileWriter(file, true);
+                jaxbMarshaller.marshal(configuration, fw);
+            }
+            finally
+            {
+                if (fw != null)
+                    fw.close();
+            }
+
+            jaxbMarshaller.marshal(configuration, System.out);
+        }
+        catch (Exception ex)
+        {
+            throw new LoggingConfigurationException(ex);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Configuration unmarshalLogbackXML() throws LoggingConfigurationException
+    {
+        if (configuration != null)
+            return configuration;
+        try
+        {
+            URL url = LogBackXMLUtils.class.getClassLoader().getResource("logback.xml");
+            File file = new File(url.toURI());
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
+
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            JAXBElement<Configuration> el = (JAXBElement<Configuration>) jaxbUnmarshaller.unmarshal(file);
+
+            return el.getValue();
+        }
+        catch (Exception ex)
+        {
+            throw new LoggingConfigurationException(ex);
+        }
     }
 }

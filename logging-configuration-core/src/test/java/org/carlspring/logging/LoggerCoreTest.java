@@ -1,9 +1,12 @@
 package org.carlspring.logging;
 
+import javax.xml.bind.JAXBElement;
+
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
+import org.carlspring.logging.utils.LogBackXMLUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,16 +15,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations =
-{ "/META-INF/spring/logging-*-context.xml",
+@ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
         "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class LoggerCoreTest
 {
+
     @Autowired
     private LoggingManagementService loggingManagementService;
 
     @Test
-    public void testLogger() 
+    public void testLogger()
     {
         testAddLogger();
         testUpdateLogger();
@@ -32,15 +35,25 @@ public class LoggerCoreTest
     {
         try
         {
-            loggingManagementService.addLogger("com.yog.test", "debug", "console");
+            String packageName = "com.yog.test";
+            loggingManagementService.addLogger(packageName, "debug", "CONSOLE");
+            
+            LogBackXMLUtils.getLogger(packageName);
             Assert.assertTrue(true);
-        } 
+        }
         catch (LoggingConfigurationException e)
         {
+            e.printStackTrace();
             Assert.assertTrue(false);
-        } 
+        }
         catch (AppenderNotFoundException e)
         {
+            e.printStackTrace();
+            Assert.assertTrue(false);
+        }
+        catch (LoggerNotFoundException e)
+        {
+            e.printStackTrace();
             Assert.assertTrue(false);
         }
     }
@@ -49,13 +62,16 @@ public class LoggerCoreTest
     {
         try
         {
-            loggingManagementService.updateLogger("com.yog.test", "info");
+            String packageName = "com.yog.test";
+            loggingManagementService.updateLogger(packageName, "info");
+            LogBackXMLUtils.getLogger(packageName);
             Assert.assertTrue(true);
-        } 
+        }
         catch (LoggingConfigurationException e)
         {
+            e.printStackTrace();
             Assert.assertTrue(false);
-        } 
+        }
         catch (LoggerNotFoundException e)
         {
             e.printStackTrace();
@@ -67,16 +83,19 @@ public class LoggerCoreTest
     {
         try
         {
-            loggingManagementService.deleteLogger("com.yog.test");
-            Assert.assertTrue(true);
-        } 
+            String packageName = "com.yog.test";
+            loggingManagementService.deleteLogger(packageName);
+            LogBackXMLUtils.getLogger(packageName);
+            Assert.assertTrue(false);
+        }
         catch (LoggingConfigurationException e)
         {
+            e.printStackTrace();
             Assert.assertTrue(false);
-        } 
+        }
         catch (LoggerNotFoundException e)
         {
-            Assert.assertTrue(false);
+            Assert.assertTrue(true);
         }
     }
 

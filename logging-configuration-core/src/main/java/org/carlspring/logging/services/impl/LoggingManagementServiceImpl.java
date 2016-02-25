@@ -64,7 +64,7 @@ public class LoggingManagementServiceImpl
                 log.setAdditive(false); /* set to true if root should log too */
                 log.addAppender(appender);
 
-                LogBackXMLUtils.addLogger(loggerPackage, level);
+                LogBackXMLUtils.addLogger(loggerPackage, level, appenderName);
         	}
     	}
     }

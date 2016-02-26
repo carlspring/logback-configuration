@@ -64,7 +64,7 @@ public class LoggingManagementServiceImpl
                 log.setAdditive(false); /* set to true if root should log too */
                 log.addAppender(appender);
 
-                LogBackXMLUtils.addLogger(loggerPackage, level, appenderName);
+                LogBackXMLUtils.addLogger(loggerPackage, level.toUpperCase(), appenderName);
         	}
     	}
     }
@@ -93,7 +93,7 @@ public class LoggingManagementServiceImpl
 		    			LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel(level.toUpperCase()));
 		        
-	            LogBackXMLUtils.updateLogger(loggerPackage, level);
+	            LogBackXMLUtils.updateLogger(loggerPackage, level.toUpperCase());
 	    	}
     	}
     }
@@ -116,8 +116,7 @@ public class LoggingManagementServiceImpl
 	    	{
 		    	Logger log = (Logger) 
 		    			LoggerFactory.getLogger(loggerPackage);
-		        log.setLevel(Level.toLevel("off".toUpperCase()));
-
+		        log.setLevel(Level.OFF);
                 LogBackXMLUtils.deleteLogger(loggerPackage);
 	    	}
     	}

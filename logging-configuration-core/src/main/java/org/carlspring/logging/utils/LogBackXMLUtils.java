@@ -1,7 +1,6 @@
 package org.carlspring.logging.utils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.net.URL;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 
 import org.carlspring.logging.Appender;
 import org.carlspring.logging.AppenderRef;
@@ -26,19 +24,6 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
  */
 public class LogBackXMLUtils
 {
-    private static Configuration configuration;
-
-    static
-    {
-        try
-        {
-            configuration = unmarshalLogbackXML();
-        }
-        catch (LoggingConfigurationException e)
-        {
-            e.printStackTrace();
-        }
-    }
 
     public static void addLogger(String packageName, String levelName, String appenderName)
             throws LoggingConfigurationException
@@ -55,10 +40,12 @@ public class LogBackXMLUtils
 
             AppenderRef rf = of.createAppenderRef();
             rf.setRef(appenderName);
-            logger.getAppenderRefOrAny().add(rf);
+            logger.getAppenderRefOrAny().add(of.createLoggerAppenderRef(rf));
 
-            configuration.getStatusListenerOrContextListenerOrInclude().add(
-                    new JAXBElement<Logger>(new QName("logger"), Logger.class, logger));
+            of.createConfigurationLogger(logger);
+
+            Configuration configuration = unmarshalLogbackXML();
+            configuration.getStatusListenerOrContextListenerOrInclude().add(of.createConfigurationLogger(logger));
 
             marshalLogbackXML(configuration);
         }
@@ -74,8 +61,7 @@ public class LogBackXMLUtils
         {
             Configuration configuration = unmarshalLogbackXML();
 
-            Logger logger = getLogger(packageName);
-            logger.setName(packageName);
+            Logger logger = getLogger(packageName, configuration);
             logger.setLevel(levelName);
 
             marshalLogbackXML(configuration);
@@ -92,7 +78,7 @@ public class LogBackXMLUtils
         {
             Configuration configuration = unmarshalLogbackXML();
 
-            JAXBElement<Logger> logger = getLoggerJAXBElement(packageName);
+            JAXBElement<Logger> logger = getLoggerJAXBElement(packageName, configuration);
 
             configuration.getStatusListenerOrContextListenerOrInclude().remove(logger);
 
@@ -104,8 +90,10 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void checkAppender(String appenderName) throws AppenderNotFoundException
+    public static void checkAppender(String appenderName) throws AppenderNotFoundException,
+            LoggingConfigurationException
     {
+        Configuration configuration = unmarshalLogbackXML();
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
         {
@@ -122,7 +110,12 @@ public class LogBackXMLUtils
         throw new AppenderNotFoundException("Appender not found!");
     }
 
-    public static Logger getLogger(String packageName) throws LoggerNotFoundException
+    public static Logger getLogger(String packageName) throws LoggerNotFoundException, LoggingConfigurationException
+    {
+        return getLogger(packageName, unmarshalLogbackXML());
+    }
+    
+    public static Logger getLogger(String packageName, Configuration configuration) throws LoggerNotFoundException, LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
@@ -141,7 +134,8 @@ public class LogBackXMLUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static JAXBElement<Logger> getLoggerJAXBElement(String packageName) throws LoggerNotFoundException
+    private static JAXBElement<Logger> getLoggerJAXBElement(String packageName, Configuration configuration) throws LoggerNotFoundException,
+            LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
@@ -168,22 +162,14 @@ public class LogBackXMLUtils
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            // jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-            // true);
+            
+            ObjectFactory of = new ObjectFactory();
+            
+            JAXBElement<Configuration> el = of.createConfiguration(configuration);
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-            FileWriter fw = null;
-            try
-            {
-                fw = new FileWriter(file, true);
-                jaxbMarshaller.marshal(configuration, fw);
-            }
-            finally
-            {
-                if (fw != null)
-                    fw.close();
-            }
-
-            jaxbMarshaller.marshal(configuration, System.out);
+            jaxbMarshaller.marshal(el, file);
+            jaxbMarshaller.marshal(el, System.out);
         }
         catch (Exception ex)
         {
@@ -194,8 +180,6 @@ public class LogBackXMLUtils
     @SuppressWarnings("unchecked")
     public static Configuration unmarshalLogbackXML() throws LoggingConfigurationException
     {
-        if (configuration != null)
-            return configuration;
         try
         {
             URL url = LogBackXMLUtils.class.getClassLoader().getResource("logback.xml");

@@ -1,7 +1,5 @@
 package org.carlspring.logging;
 
-import javax.xml.bind.JAXBElement;
-
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;

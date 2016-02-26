@@ -119,7 +119,7 @@ public class LogBackXMLUtils
                 return;
             }
         }
-        throw new AppenderNotFoundException("Appender not found exception");
+        throw new AppenderNotFoundException("Appender not found!");
     }
 
     public static Logger getLogger(String packageName) throws LoggerNotFoundException
@@ -137,7 +137,7 @@ public class LogBackXMLUtils
                 return logger;
             }
         }
-        throw new LoggerNotFoundException("Logger not found exception");
+        throw new LoggerNotFoundException("Logger not found!");
     }
 
     @SuppressWarnings("unchecked")
@@ -156,7 +156,7 @@ public class LogBackXMLUtils
                 return (JAXBElement<Logger>) el;
             }
         }
-        throw new LoggerNotFoundException("Logger not found exception");
+        throw new LoggerNotFoundException("Logger not found!");
     }
 
     public static void marshalLogbackXML(Configuration configuration) throws LoggingConfigurationException

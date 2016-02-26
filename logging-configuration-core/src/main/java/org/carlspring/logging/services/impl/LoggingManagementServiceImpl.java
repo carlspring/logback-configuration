@@ -41,11 +41,11 @@ public class LoggingManagementServiceImpl
     	{
         	if(!isValidPackage(loggerPackage)) 
         	{
-        		throw new LoggingConfigurationException("Invalid package exception");
+        		throw new LoggingConfigurationException("Invalid package!");
         	} 
         	else if(!isValidLevel(level)) 
         	{
-        		throw new LoggingConfigurationException("Invalid level exception");
+        		throw new LoggingConfigurationException("Invalid level!");
         	} 
         	else 
         	{
@@ -55,7 +55,7 @@ public class LoggingManagementServiceImpl
                 
                 if(appender == null) 
                 {
-                    throw new AppenderNotFoundException("Appender not found exception");
+                    throw new AppenderNotFoundException("Appender not found!");
                 }
                 
                 Logger log = (Logger) 
@@ -77,15 +77,15 @@ public class LoggingManagementServiceImpl
     	{
     		if(!isValidPackage(loggerPackage)) 
         	{
-        		throw new LoggingConfigurationException("Invalid package exception");
+        		throw new LoggingConfigurationException("Invalid package!");
         	} 
         	else if(!isValidLevel(level)) 
         	{
-        		throw new LoggingConfigurationException("Invalid level exception");
+        		throw new LoggingConfigurationException("Invalid level!");
         	} 
 	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
-	    		throw new LoggerNotFoundException("Logger not found exception");
+	    		throw new LoggerNotFoundException("Logger not found!");
 	        } 
 	    	else 
 	    	{
@@ -106,11 +106,11 @@ public class LoggingManagementServiceImpl
     	{
 	    	if(!isValidPackage(loggerPackage)) 
 	    	{
-	    		throw new LoggingConfigurationException("Invalid package exception");
+	    		throw new LoggingConfigurationException("Invalid package!");
 	    	} 
 	    	else if(!packageLoggerExists(loggerPackage)) 
 	    	{
-	    		throw new LoggerNotFoundException("Logger not found exception");
+	    		throw new LoggerNotFoundException("Logger not found!");
 	    	}
 	    	else 
 	    	{

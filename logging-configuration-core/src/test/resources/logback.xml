@@ -40,9 +40,9 @@
 	<logger name="org.apache.commons.httpclient">
 		<level value="INFO" />
 	</logger>
-	<logger name="org.carlspring.logging">
+	<!-- <logger name="org.carlspring.logging">
 		<level value="DEBUG" />
-	</logger>
+	</logger> -->
 	<logger name="org.glassfish.jersey">
 		<level value="DEBUG" />
 	</logger>

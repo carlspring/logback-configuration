@@ -9,6 +9,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
 import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +22,11 @@ import com.carmatechnologies.commons.testing.logging.api.LogLevel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
-        "classpath*:/META-INF/spring/logging-*-context.xml" })
-public class BLoggerCoreTest
+                                    "classpath*:/META-INF/spring/logging-*-context.xml" })
+public class UpdateLoggerTest
 {
+
+    public static final String PACKAGE_NAME = "org.carlspring.logging.test";
 
     @Autowired
     private LoggingManagementService loggingManagementService;
@@ -34,19 +37,24 @@ public class BLoggerCoreTest
         captureFor(LogGenerator.class, LogLevel.INFO);
     }};
 
+
+    @Before
+    public void setUp() throws Exception
+    {
+        loggingManagementService.addLogger(PACKAGE_NAME, "debug", "CONSOLE");
+        loggingManagementService.updateLogger(PACKAGE_NAME, "info");
+    }
+
     @Test
     public void testUpdateLogger() throws LoggingConfigurationException, LoggerNotFoundException
     {
-        String packageName = "org.carlspring.logging.test";
-        loggingManagementService.updateLogger(packageName, "info");
-        
         LogGenerator lg = new LogGenerator();
         lg.infoLog();
         
         assertThat(infoLogs.contains("info log"), is(true));
         
         // Getting logger from file, if its not in file it will throw exception
-        Logger logger = LogBackXMLUtils.getLogger(packageName);
+        Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
         assertNotNull(logger);
     }
 

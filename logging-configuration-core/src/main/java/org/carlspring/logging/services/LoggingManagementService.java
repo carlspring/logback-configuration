@@ -11,6 +11,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
  */
 public interface LoggingManagementService 
 {
+
 	void addLogger(String loggerPackage, String level, String appenderName) 
 			throws LoggingConfigurationException, AppenderNotFoundException;
 

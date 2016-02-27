@@ -17,4 +17,5 @@ public class LogGenerator
     {
         logger.debug("debug log");
     }
+
 }

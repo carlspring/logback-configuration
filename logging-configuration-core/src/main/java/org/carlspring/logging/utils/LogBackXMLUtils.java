@@ -19,7 +19,6 @@ import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 
 /**
- *
  * @author Yougeshwar
  */
 public class LogBackXMLUtils
@@ -72,7 +71,8 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void deleteLogger(String packageName) throws LoggingConfigurationException
+    public static void deleteLogger(String packageName)
+            throws LoggingConfigurationException
     {
         try
         {
@@ -90,8 +90,9 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void checkAppender(String appenderName) throws AppenderNotFoundException,
-            LoggingConfigurationException
+    public static void checkAppender(String appenderName)
+            throws AppenderNotFoundException,
+                   LoggingConfigurationException
     {
         Configuration configuration = unmarshalLogbackXML();
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
@@ -119,7 +120,7 @@ public class LogBackXMLUtils
     {
         return getLogger(packageName, unmarshalLogbackXML());
     }
-    
+
     public static Logger getLogger(String packageName, Configuration configuration)
             throws LoggerNotFoundException,
                    LoggingConfigurationException
@@ -129,7 +130,9 @@ public class LogBackXMLUtils
         {
             JAXBElement<?> el = (JAXBElement<?>) obj;
             if (!(el.getValue() instanceof Logger))
+            {
                 continue;
+            }
 
             Logger logger = (Logger) el.getValue();
             if (logger.getName().equals(packageName))
@@ -175,9 +178,9 @@ public class LogBackXMLUtils
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            
+
             ObjectFactory of = new ObjectFactory();
-            
+
             JAXBElement<Configuration> el = of.createConfiguration(configuration);
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 

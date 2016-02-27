@@ -30,7 +30,7 @@ public class UpdateLoggerTest
 
     @Autowired
     private LoggingManagementService loggingManagementService;
-    
+
     @Rule
     public final ExpectedLogs infoLogs = new ExpectedLogs()
     {{
@@ -50,9 +50,9 @@ public class UpdateLoggerTest
     {
         LogGenerator lg = new LogGenerator();
         lg.infoLog();
-        
+
         assertThat(infoLogs.contains("info log"), is(true));
-        
+
         // Getting logger from file, if its not in file it will throw exception
         Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
         assertNotNull(logger);

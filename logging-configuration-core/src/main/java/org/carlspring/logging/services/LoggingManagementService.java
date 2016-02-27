@@ -5,19 +5,18 @@ import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 
 /**
- * 
  * @author mtodorov
  * @author Yougeshwar
  */
-public interface LoggingManagementService 
+public interface LoggingManagementService
 {
 
-	void addLogger(String loggerPackage, String level, String appenderName) 
-			throws LoggingConfigurationException, AppenderNotFoundException;
+    void addLogger(String loggerPackage, String level, String appenderName)
+            throws LoggingConfigurationException, AppenderNotFoundException;
 
-	void updateLogger(String loggerPackage, String level) 
-			throws LoggingConfigurationException, LoggerNotFoundException;
+    void updateLogger(String loggerPackage, String level)
+            throws LoggingConfigurationException, LoggerNotFoundException;
 
-	void deleteLogger(String loggerPackage) 
-			throws LoggingConfigurationException, LoggerNotFoundException;
+    void deleteLogger(String loggerPackage)
+            throws LoggingConfigurationException, LoggerNotFoundException;
 }

@@ -23,7 +23,7 @@ import com.carmatechnologies.commons.testing.logging.api.LogLevel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
-        "classpath*:/META-INF/spring/logging-*-context.xml" })
+                                    "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class AddLoggerTest
 {
 

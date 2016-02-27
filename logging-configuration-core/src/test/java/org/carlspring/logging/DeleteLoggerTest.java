@@ -27,7 +27,7 @@ public class DeleteLoggerTest
 
     @Autowired
     private LoggingManagementService loggingManagementService;
-    
+
     @Rule
     public final ExpectedLogs debugLogs = new ExpectedLogs()
     {{

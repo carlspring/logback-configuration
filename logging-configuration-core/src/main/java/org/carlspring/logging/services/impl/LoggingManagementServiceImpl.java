@@ -30,8 +30,14 @@ public class LoggingManagementServiceImpl
 {
 	private Object lock = new Object();
 	
-	private List<String> asList = 
-			Arrays.asList("ALL", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF", "TRACE");
+	private List<String> asList = Arrays.asList("ALL",
+												"DEBUG",
+												"INFO",
+												"WARN",
+												"ERROR",
+												"FATAL",
+												"OFF",
+												"TRACE");
 	
 	@Override
     public void addLogger(String loggerPackage, String level, String appenderName) 
@@ -49,8 +55,7 @@ public class LoggingManagementServiceImpl
         	} 
         	else 
         	{
-            	Logger root = (Logger) 
-            			LoggerFactory.getLogger(ROOT_LOGGER_NAME);
+            	Logger root = (Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
                 Appender<ILoggingEvent> appender = root.getAppender(appenderName.toUpperCase());
                 
                 if(appender == null) 
@@ -58,8 +63,7 @@ public class LoggingManagementServiceImpl
                     throw new AppenderNotFoundException("Appender not found!");
                 }
                 
-                Logger log = (Logger) 
-                		LoggerFactory.getLogger(loggerPackage);
+                Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
                 log.setLevel(Level.toLevel(level.toUpperCase()));
                 log.setAdditive(false); /* set to true if root should log too */
                 log.addAppender(appender);
@@ -89,8 +93,7 @@ public class LoggingManagementServiceImpl
 	        } 
 	    	else 
 	    	{
-		    	Logger log = (Logger) 
-		    			LoggerFactory.getLogger(loggerPackage);
+		    	Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.toLevel(level.toUpperCase()));
 		        
 	            LogBackXMLUtils.updateLogger(loggerPackage, level.toUpperCase());
@@ -114,8 +117,7 @@ public class LoggingManagementServiceImpl
 	    	}
 	    	else 
 	    	{
-		    	Logger log = (Logger) 
-		    			LoggerFactory.getLogger(loggerPackage);
+		    	Logger log = (Logger)  LoggerFactory.getLogger(loggerPackage);
 		        log.setLevel(Level.OFF);
                 LogBackXMLUtils.deleteLogger(loggerPackage);
 	    	}
@@ -124,8 +126,7 @@ public class LoggingManagementServiceImpl
 	
     private boolean packageLoggerExists(String packageLogger) 
     {
-    	LoggerContext lc = (LoggerContext) 
-    			LoggerFactory.getILoggerFactory();
+    	LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     	
         List<Logger> loggerList = lc.getLoggerList();
         
@@ -136,6 +137,7 @@ public class LoggingManagementServiceImpl
             	return true;
             }
         }
+
         return false;
     }
 	
@@ -149,4 +151,5 @@ public class LoggingManagementServiceImpl
     	Pattern pattern = Pattern.compile("^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$");
         return pattern.matcher(pkg).matches();
     }
+
 }

@@ -99,7 +99,9 @@ public class LogBackXMLUtils
         {
             JAXBElement<?> el = (JAXBElement<?>) obj;
             if (!(el.getValue() instanceof Appender))
+            {
                 continue;
+            }
 
             Appender appender = (Appender) el.getValue();
             if (appender.getName().equals(appenderName))
@@ -107,15 +109,20 @@ public class LogBackXMLUtils
                 return;
             }
         }
+
         throw new AppenderNotFoundException("Appender not found!");
     }
 
-    public static Logger getLogger(String packageName) throws LoggerNotFoundException, LoggingConfigurationException
+    public static Logger getLogger(String packageName)
+            throws LoggerNotFoundException,
+                   LoggingConfigurationException
     {
         return getLogger(packageName, unmarshalLogbackXML());
     }
     
-    public static Logger getLogger(String packageName, Configuration configuration) throws LoggerNotFoundException, LoggingConfigurationException
+    public static Logger getLogger(String packageName, Configuration configuration)
+            throws LoggerNotFoundException,
+                   LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
@@ -134,15 +141,19 @@ public class LogBackXMLUtils
     }
 
     @SuppressWarnings("unchecked")
-    private static JAXBElement<Logger> getLoggerJAXBElement(String packageName, Configuration configuration) throws LoggerNotFoundException,
-            LoggingConfigurationException
+    private static JAXBElement<Logger> getLoggerJAXBElement(String packageName,
+                                                            Configuration configuration)
+            throws LoggerNotFoundException,
+                   LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
         {
             JAXBElement<?> el = (JAXBElement<?>) obj;
             if (!(el.getValue() instanceof Logger))
+            {
                 continue;
+            }
 
             Logger logger = (Logger) el.getValue();
             if (logger.getName().equals(packageName))
@@ -150,10 +161,12 @@ public class LogBackXMLUtils
                 return (JAXBElement<Logger>) el;
             }
         }
+
         throw new LoggerNotFoundException("Logger not found!");
     }
 
-    public static void marshalLogbackXML(Configuration configuration) throws LoggingConfigurationException
+    public static void marshalLogbackXML(Configuration configuration)
+            throws LoggingConfigurationException
     {
         try
         {

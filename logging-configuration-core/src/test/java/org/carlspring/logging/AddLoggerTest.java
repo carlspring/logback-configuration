@@ -10,6 +10,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
 import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +24,11 @@ import com.carmatechnologies.commons.testing.logging.api.LogLevel;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
         "classpath*:/META-INF/spring/logging-*-context.xml" })
-public class ALoggerCoreTest
+public class AddLoggerTest
 {
+
+    public static final String PACKAGE_NAME = "org.carlspring.logging.test";
+
 
     @Autowired
     private LoggingManagementService loggingManagementService;
@@ -34,21 +38,27 @@ public class ALoggerCoreTest
     {{
         captureFor(LogGenerator.class, LogLevel.DEBUG);
     }};
-    
-    @Test
-    public void testAddLogger() throws LoggingConfigurationException, AppenderNotFoundException,
-            LoggerNotFoundException
-    {
-        String packageName = "org.carlspring.logging.test";
-        loggingManagementService.addLogger(packageName, "debug", "CONSOLE");
 
+
+    @Before
+    public void setUp() throws Exception
+    {
+        loggingManagementService.addLogger(PACKAGE_NAME, "debug", "CONSOLE");
+    }
+
+    @Test
+    public void testAddLogger()
+            throws LoggingConfigurationException,
+                   AppenderNotFoundException,
+                   LoggerNotFoundException
+    {
         LogGenerator lg = new LogGenerator();
         lg.debugLog();
         
         assertThat(debugLogs.contains("debug log"), is(true));
         
         // Getting logger from file, if its not in file it will throw exception
-        Logger logger = LogBackXMLUtils.getLogger(packageName);
+        Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
         assertNotNull(logger);
     }
 

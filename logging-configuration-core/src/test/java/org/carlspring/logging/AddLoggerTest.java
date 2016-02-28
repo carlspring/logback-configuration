@@ -10,6 +10,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
 import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,6 +47,12 @@ public class AddLoggerTest
         loggingManagementService.addLogger(PACKAGE_NAME, "debug", "CONSOLE");
     }
 
+    @After
+    public void tearDown() throws Exception
+    {
+        loggingManagementService.deleteLogger(PACKAGE_NAME);
+    }
+
     @Test
     public void testAddLogger()
             throws LoggingConfigurationException,
@@ -59,6 +66,7 @@ public class AddLoggerTest
         
         // Getting logger from file, if its not in file it will throw exception
         Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
+
         assertNotNull(logger);
     }
 

@@ -30,19 +30,20 @@ public class LoggingRestlet
 
 
     @PUT
-    @Path("/add")
+    @Path("/logger")
     public Response addLogger(@QueryParam("logger") String loggerPackage,
-            @QueryParam("level") String level,
-            @QueryParam("appender_name") String appenderName)
+                              @QueryParam("level") String level,
+                              @QueryParam("appenderName") String appenderName)
     {
         try
         {
             loggingManagementService.addLogger(loggerPackage, level, appenderName);
         }
-        catch (LoggingConfigurationException ex) 
+        catch (LoggingConfigurationException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        } catch (AppenderNotFoundException ex)
+        }
+        catch (AppenderNotFoundException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
@@ -51,7 +52,7 @@ public class LoggingRestlet
     }
 
     @POST
-    @Path("/update")
+    @Path("/logger")
     public Response updateLogger(@QueryParam("logger") String loggerPackage,
                                  @QueryParam("level") String level)
     {
@@ -59,11 +60,11 @@ public class LoggingRestlet
         {
             loggingManagementService.updateLogger(loggerPackage, level);
         }
-        catch (LoggingConfigurationException ex) 
+        catch (LoggingConfigurationException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
-        catch (LoggerNotFoundException ex) 
+        catch (LoggerNotFoundException ex)
         {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
@@ -72,7 +73,7 @@ public class LoggingRestlet
     }
 
     @DELETE
-    @Path("/delete")
+    @Path("/logger")
     public Response delete(@QueryParam("logger") String loggerPackage)
             throws IOException
     {
@@ -80,16 +81,24 @@ public class LoggingRestlet
         {
             loggingManagementService.deleteLogger(loggerPackage);
         }
-        catch (LoggingConfigurationException ex) 
+        catch (LoggingConfigurationException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
-        catch (LoggerNotFoundException ex) 
+        catch (LoggerNotFoundException ex)
         {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
 
         return Response.ok().build();
     }
+
+    // TODO: 1) Add a method for downloading the config file:
+    // TODO:      This should simply return the current logback XML configuration.
+    // TODO: 2) Add a method for uploading a config file:
+    // TODO:      This should overwrite the existing logback file and reload it.
+    // TODO: 3) Add a method for downloading the current log file.
+    // TODO:
+    // TODO: The code for all of the above should be implemented in the service class and just be called here.
 
 }

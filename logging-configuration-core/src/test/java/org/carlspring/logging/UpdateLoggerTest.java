@@ -1,6 +1,7 @@
 package org.carlspring.logging;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -9,6 +10,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
 import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +44,13 @@ public class UpdateLoggerTest
     public void setUp() throws Exception
     {
         loggingManagementService.addLogger(PACKAGE_NAME, "debug", "CONSOLE");
-        loggingManagementService.updateLogger(PACKAGE_NAME, "info");
+        loggingManagementService.updateLogger(PACKAGE_NAME, "INFO");
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+        loggingManagementService.deleteLogger(PACKAGE_NAME);
     }
 
     @Test
@@ -55,7 +63,9 @@ public class UpdateLoggerTest
 
         // Getting logger from file, if its not in file it will throw exception
         Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
+
         assertNotNull(logger);
+        assertEquals("Failed to update logging level for logger!", "INFO", logger.getLevel());
     }
 
 }

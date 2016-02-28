@@ -41,18 +41,21 @@ public class LoggingManagementServiceImpl
                                                 "TRACE");
 
     @Override
-    public void addLogger(String loggerPackage, String level, String appenderName)
-            throws LoggingConfigurationException, AppenderNotFoundException
+    public void addLogger(String loggerPackage,
+                          String level,
+                          String appenderName)
+            throws LoggingConfigurationException,
+                   AppenderNotFoundException
     {
         synchronized (lock)
         {
             if (!isValidPackage(loggerPackage))
             {
-                throw new LoggingConfigurationException("Invalid package!");
+                throw new LoggingConfigurationException("Invalid package '" + loggerPackage + "'!");
             }
             else if (!isValidLevel(level))
             {
-                throw new LoggingConfigurationException("Invalid level!");
+                throw new LoggingConfigurationException("Invalid level '" + level + "'!");
             }
             else
             {
@@ -61,7 +64,7 @@ public class LoggingManagementServiceImpl
 
                 if (appender == null)
                 {
-                    throw new AppenderNotFoundException("Appender not found!");
+                    throw new AppenderNotFoundException("Appender '" + appenderName + "' not found!");
                 }
 
                 Logger log = (Logger) LoggerFactory.getLogger(loggerPackage);
@@ -76,21 +79,22 @@ public class LoggingManagementServiceImpl
 
     @Override
     public void updateLogger(String loggerPackage, String level)
-            throws LoggingConfigurationException, LoggerNotFoundException
+            throws LoggingConfigurationException,
+                   LoggerNotFoundException
     {
         synchronized (lock)
         {
             if (!isValidPackage(loggerPackage))
             {
-                throw new LoggingConfigurationException("Invalid package!");
+                throw new LoggingConfigurationException("Invalid package '" + loggerPackage + "'!");
             }
             else if (!isValidLevel(level))
             {
-                throw new LoggingConfigurationException("Invalid level!");
+                throw new LoggingConfigurationException("Invalid level '" + level + "'!");
             }
             else if (!packageLoggerExists(loggerPackage))
             {
-                throw new LoggerNotFoundException("Logger not found!");
+                throw new LoggerNotFoundException("Logger '" + loggerPackage + "' not found!");
             }
             else
             {
@@ -104,17 +108,18 @@ public class LoggingManagementServiceImpl
 
     @Override
     public void deleteLogger(String loggerPackage)
-            throws LoggingConfigurationException, LoggerNotFoundException
+            throws LoggingConfigurationException,
+                   LoggerNotFoundException
     {
         synchronized (lock)
         {
             if (!isValidPackage(loggerPackage))
             {
-                throw new LoggingConfigurationException("Invalid package!");
+                throw new LoggingConfigurationException("Invalid package '" + loggerPackage + "'!");
             }
             else if (!packageLoggerExists(loggerPackage))
             {
-                throw new LoggerNotFoundException("Logger not found!");
+                throw new LoggerNotFoundException("Logger '" + loggerPackage + "' not found!");
             }
             else
             {

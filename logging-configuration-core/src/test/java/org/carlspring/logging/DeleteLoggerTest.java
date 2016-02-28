@@ -7,6 +7,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
 import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,18 +41,22 @@ public class DeleteLoggerTest
     {
         loggingManagementService.addLogger(PACKAGE_NAME, "debug", "CONSOLE");
         loggingManagementService.updateLogger(PACKAGE_NAME, "info");
-        loggingManagementService.deleteLogger(PACKAGE_NAME);
     }
 
-    @Test(expected = LoggerNotFoundException.class)
-    public void testDeleteLogger() throws LoggingConfigurationException, LoggerNotFoundException
+    @Test
+    public void testDeleteLogger()
+            throws LoggingConfigurationException,
+                   LoggerNotFoundException
     {
+        loggingManagementService.deleteLogger(PACKAGE_NAME);
+
         LogGenerator lg = new LogGenerator();
         lg.debugLog();
 
         // Getting logger from file, if its not in file it will throw exception
         Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
-        assertNull(logger);
+
+        assertNull("Failed to delete logger!", logger);
     }
 
 }

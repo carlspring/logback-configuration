@@ -54,7 +54,8 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void updateLogger(String packageName, String levelName) throws LoggingConfigurationException
+    public static void updateLogger(String packageName, String levelName)
+            throws LoggingConfigurationException
     {
         try
         {
@@ -115,15 +116,13 @@ public class LogBackXMLUtils
     }
 
     public static Logger getLogger(String packageName)
-            throws LoggerNotFoundException,
-                   LoggingConfigurationException
+            throws LoggingConfigurationException
     {
         return getLogger(packageName, unmarshalLogbackXML());
     }
 
     public static Logger getLogger(String packageName, Configuration configuration)
-            throws LoggerNotFoundException,
-                   LoggingConfigurationException
+            throws LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
         for (Object obj : list)
@@ -140,7 +139,8 @@ public class LogBackXMLUtils
                 return logger;
             }
         }
-        throw new LoggerNotFoundException("Logger not found!");
+
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -165,7 +165,7 @@ public class LogBackXMLUtils
             }
         }
 
-        throw new LoggerNotFoundException("Logger not found!");
+        throw new LoggerNotFoundException("Logger '" + packageName + "' not found!");
     }
 
     public static void marshalLogbackXML(Configuration configuration)

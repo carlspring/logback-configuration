@@ -9,7 +9,7 @@ import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
-import org.carlspring.logging.utils.LogBackXMLUtils;
+import org.carlspring.logging.utils.LogBackXmlConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,7 +62,8 @@ public class UpdateLoggerTest
         assertThat(infoLogs.contains("info log"), is(true));
 
         // Getting logger from file, if its not in file it will throw exception
-        Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
+        LogBackXmlConfiguration obj = new LogBackXmlConfiguration(null);
+        Logger logger = obj.getLogger(PACKAGE_NAME);
 
         assertNotNull(logger);
         assertEquals("Failed to update logging level for logger!", "INFO", logger.getLevel());

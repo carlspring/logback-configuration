@@ -1,5 +1,7 @@
 package org.carlspring.logging.services;
 
+import java.io.InputStream;
+
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
@@ -19,4 +21,18 @@ public interface LoggingManagementService
 
     void deleteLogger(String loggerPackage)
             throws LoggingConfigurationException, LoggerNotFoundException;
+    
+    InputStream downloadLog() 
+            throws LoggingConfigurationException;
+    
+    InputStream downloadLogbackConfiguration() 
+            throws LoggingConfigurationException;
+    
+    void uploadLogbackConfiguration(String content) 
+            throws LoggingConfigurationException;
+    
+    public String getPathToXml();
+    
+    public void setPathToXml(String pathToXml);
+    
 }

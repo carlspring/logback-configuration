@@ -1,8 +1,10 @@
 package org.carlspring.logging.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -10,8 +12,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
-import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
+import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -92,7 +94,55 @@ public class LoggingRestlet
 
         return Response.ok().build();
     }
+    
+    @GET
+    @Path("/logger/log")
+    public Response downloadLog()
+    {
+        try
+        {
+            InputStream is = loggingManagementService.downloadLog();
+            return Response.ok(is).build();
+        }
+        catch (LoggingConfigurationException ex)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
+    }
+    
+    @GET
+    @Path("/logger/logback")
+    public Response downloadLogbackConfiguration()
+    {
+        try
+        {
+            InputStream is = loggingManagementService.downloadLogbackConfiguration();
+            return Response.ok(is).build();
+        }
+        catch (LoggingConfigurationException ex)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
+    }
+    
+    @POST
+    @Path("/logger/logback")
+    public Response uploadLogbackConfiguration(@QueryParam("content") String content)
+    {
+        try
+        {
+            loggingManagementService.uploadLogbackConfiguration(content);
+            return Response.ok().build();
+        }
+        catch (LoggingConfigurationException ex)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
+    }
 
+//    responseBuilder = Response.ok(is);
+//    InputStream is = new FileInputStream(file...);
+//    return responseBuilder.build();
     // TODO: 1) Add a method for downloading the config file:
     // TODO:      This should simply return the current logback XML configuration.
     // TODO: 2) Add a method for uploading a config file:

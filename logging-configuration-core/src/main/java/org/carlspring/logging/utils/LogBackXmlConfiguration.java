@@ -21,10 +21,20 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 /**
  * @author Yougeshwar
  */
-public class LogBackXMLUtils
+public class LogBackXmlConfiguration
 {
+    
+    private String pathToXml;
+    
+    public LogBackXmlConfiguration(String pathToXml)
+    {
+        this.pathToXml = pathToXml;
+        pathToXml = pathToXml != null ? 
+                    pathToXml :
+                    "logback.xml";
+    }
 
-    public static void addLogger(String packageName, String levelName, String appenderName)
+    public void addLogger(String packageName, String levelName, String appenderName)
             throws LoggingConfigurationException
     {
         try
@@ -54,7 +64,7 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void updateLogger(String packageName, String levelName)
+    public void updateLogger(String packageName, String levelName)
             throws LoggingConfigurationException
     {
         try
@@ -72,7 +82,7 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void deleteLogger(String packageName)
+    public void deleteLogger(String packageName)
             throws LoggingConfigurationException
     {
         try
@@ -91,7 +101,7 @@ public class LogBackXMLUtils
         }
     }
 
-    public static void checkAppender(String appenderName)
+    public void checkAppender(String appenderName)
             throws AppenderNotFoundException,
                    LoggingConfigurationException
     {
@@ -115,13 +125,13 @@ public class LogBackXMLUtils
         throw new AppenderNotFoundException("Appender not found!");
     }
 
-    public static Logger getLogger(String packageName)
+    public Logger getLogger(String packageName)
             throws LoggingConfigurationException
     {
         return getLogger(packageName, unmarshalLogbackXML());
     }
 
-    public static Logger getLogger(String packageName, Configuration configuration)
+    public Logger getLogger(String packageName, Configuration configuration)
             throws LoggingConfigurationException
     {
         List<Object> list = configuration.getStatusListenerOrContextListenerOrInclude();
@@ -144,7 +154,7 @@ public class LogBackXMLUtils
     }
 
     @SuppressWarnings("unchecked")
-    private static JAXBElement<Logger> getLoggerJAXBElement(String packageName,
+    private JAXBElement<Logger> getLoggerJAXBElement(String packageName,
                                                             Configuration configuration)
             throws LoggerNotFoundException,
                    LoggingConfigurationException
@@ -168,12 +178,12 @@ public class LogBackXMLUtils
         throw new LoggerNotFoundException("Logger '" + packageName + "' not found!");
     }
 
-    public static void marshalLogbackXML(Configuration configuration)
+    public void marshalLogbackXML(Configuration configuration)
             throws LoggingConfigurationException
     {
         try
         {
-            URL url = LogBackXMLUtils.class.getClassLoader().getResource("logback.xml");
+            URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
             File file = new File(url.toURI());
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
@@ -194,11 +204,11 @@ public class LogBackXMLUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static Configuration unmarshalLogbackXML() throws LoggingConfigurationException
+    public Configuration unmarshalLogbackXML() throws LoggingConfigurationException
     {
         try
         {
-            URL url = LogBackXMLUtils.class.getClassLoader().getResource("logback.xml");
+            URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
             File file = new File(url.toURI());
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);

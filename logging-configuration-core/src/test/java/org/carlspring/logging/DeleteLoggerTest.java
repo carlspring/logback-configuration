@@ -1,13 +1,12 @@
 package org.carlspring.logging;
 
-import com.carmatechnologies.commons.testing.logging.ExpectedLogs;
-import com.carmatechnologies.commons.testing.logging.api.LogLevel;
+import static org.junit.Assert.assertNull;
+
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.test.LogGenerator;
-import org.carlspring.logging.utils.LogBackXMLUtils;
-import org.junit.After;
+import org.carlspring.logging.utils.LogBackXmlConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,7 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertNull;
+import com.carmatechnologies.commons.testing.logging.ExpectedLogs;
+import com.carmatechnologies.commons.testing.logging.api.LogLevel;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
@@ -54,7 +54,8 @@ public class DeleteLoggerTest
         lg.debugLog();
 
         // Getting logger from file, if its not in file it will throw exception
-        Logger logger = LogBackXMLUtils.getLogger(PACKAGE_NAME);
+        LogBackXmlConfiguration obj = new LogBackXmlConfiguration(null);
+        Logger logger = obj.getLogger(PACKAGE_NAME);
 
         assertNull("Failed to delete logger!", logger);
     }

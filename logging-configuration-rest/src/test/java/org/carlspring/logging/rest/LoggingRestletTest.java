@@ -62,6 +62,13 @@ public class LoggingRestletTest
 
         assertEquals("Failed to add logger!", Response.ok(), status);
 
+        url = client.getContextBaseUrl() +
+                "/logger?" +
+                "logger=org.carlspring.logging.test&" +
+                "level=DEBUG&" +
+                "appenderName=CONSOLE";
+        
+        
         // TODO: 1) Check that the logback.xml contains the new logger.
         // TODO: 2) Intercept the logging and check that the output is
         // TODO:    really being printed to the respective level

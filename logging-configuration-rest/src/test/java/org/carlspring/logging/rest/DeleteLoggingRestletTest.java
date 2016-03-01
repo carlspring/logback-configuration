@@ -33,7 +33,7 @@ public class DeleteLoggingRestletTest
     {
     	client = TestClient.getTestInstance();
         String url = client.getContextBaseUrl() +
-                "/logger?" +
+                "/logging/logger?" +
                 "logger=org.carlspring.logging.test&" +
                 "level=DEBUG&" +
                 "appenderName=CONSOLE";
@@ -62,7 +62,7 @@ public class DeleteLoggingRestletTest
     @Test
     public void testDeleteLogger() throws Exception
     {
-        String path = "/logger?" +
+        String path = "/logging/logger?" +
                       "logger=org.carlspring.logging.test&" +
                       "level=INFO";
 
@@ -72,7 +72,7 @@ public class DeleteLoggingRestletTest
 
         // Checking that the logback.xml contains the new logger.
         String url = client.getContextBaseUrl() + 
-		           "/logger/logback";
+		           "/logging/logger/logback";
 
         WebTarget resource = client.getClientInstance().target(url);
 

@@ -33,7 +33,7 @@ public class UpdateLoggingRestletTest
     {
         client = TestClient.getTestInstance();
         String url = client.getContextBaseUrl() +
-                "/logger?" +
+                "/logging/logger?" +
                 "logger=org.carlspring.logging.test&" +
                 "level=DEBUG&" +
                 "appenderName=CONSOLE";
@@ -52,7 +52,7 @@ public class UpdateLoggingRestletTest
     public void tearDown()
             throws Exception
     {
-        String path = "/logger?" +
+        String path = "/logging/logger?" +
                 "logger=org.carlspring.logging.test";
 
 		Response response = client.delete(path);
@@ -70,7 +70,7 @@ public class UpdateLoggingRestletTest
     public void testUpdateLogger() throws Exception
     {
         String url = client.getContextBaseUrl() +
-                     "/logger?" +
+                     "/logging/logger?" +
                      "logger=org.carlspring.logging.test&" +
                      "level=INFO";
 
@@ -85,7 +85,7 @@ public class UpdateLoggingRestletTest
 
         // Checking that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + 
-		           "/logger/logback";
+		           "/logging/logger/logback";
 
         resource = client.getClientInstance().target(url);
 

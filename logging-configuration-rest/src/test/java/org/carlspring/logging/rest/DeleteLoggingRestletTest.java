@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,11 +40,11 @@ public class DeleteLoggingRestletTest
 	   WebTarget resource = client.getClientInstance().target(url);
 	
 	   Response response = resource.request(MediaType.TEXT_PLAIN)
-	                               .post(Entity.entity("Add", MediaType.TEXT_PLAIN));
+	                               .put(Entity.entity("Add", MediaType.TEXT_PLAIN));
 	
 	   int status = response.getStatus();
 	
-	   assertEquals("Failed to add logger!", Response.ok(), status);
+	   assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
     }
 
     @After
@@ -58,7 +57,6 @@ public class DeleteLoggingRestletTest
         }
     }
     
-    @Ignore
     @Test
     public void testDeleteLogger() throws Exception
     {
@@ -68,7 +66,7 @@ public class DeleteLoggingRestletTest
 
         Response response = client.delete(path);
 
-        assertEquals("Failed to delete logger!", Response.ok(), response.getStatus());
+        assertEquals("Failed to delete logger!", Response.ok().build().getStatus(), response.getStatus());
 
         // Checking that the logback.xml contains the new logger.
         String url = client.getContextBaseUrl() + 
@@ -80,7 +78,7 @@ public class DeleteLoggingRestletTest
 		                    .get();
 
         int status = response.getStatus();
-        assertEquals("Failed to get log file!", Response.ok(), status);
+        assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);
 
         assertFalse(response.toString().contains("org.carlspring.logging.test"));
     }

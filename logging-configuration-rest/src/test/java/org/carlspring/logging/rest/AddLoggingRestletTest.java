@@ -40,7 +40,7 @@ public class AddLoggingRestletTest
     public void tearDown()
             throws Exception
     {
-        String path = "/logger?" +
+        String path = "/logging/logger?" +
                 "logger=" + PACKAGE_NAME;
 
 		Response response = client.delete(path);
@@ -57,7 +57,7 @@ public class AddLoggingRestletTest
     public void testAddLogger() throws Exception
     {
         String url = client.getContextBaseUrl() +
-                     "/logger?" +
+                     "/logging/logger?" +
                      "logger=" + PACKAGE_NAME +
                      "&" +
                      "level=DEBUG&" +
@@ -76,7 +76,7 @@ public class AddLoggingRestletTest
          * Checking that the logback.xml contains the new logger. 
          * */
         url = client.getContextBaseUrl() + 
-		           "/logger/logback";
+		           "/logging/logger/logback";
 
         resource = client.getClientInstance().target(url);
 
@@ -95,7 +95,7 @@ public class AddLoggingRestletTest
         logGen.debugLog();
         
         url = client.getContextBaseUrl() + 
-		           "/logger/log";
+		           "/logging/logger/log";
 
 		resource = client.getClientInstance().target(url);
 		

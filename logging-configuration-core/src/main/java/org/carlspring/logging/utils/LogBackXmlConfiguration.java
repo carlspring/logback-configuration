@@ -29,7 +29,7 @@ public class LogBackXmlConfiguration
     public LogBackXmlConfiguration(String pathToXml)
     {
         this.pathToXml = pathToXml;
-        pathToXml = pathToXml != null ? 
+        this.pathToXml = pathToXml != null ? 
                     pathToXml :
                     "logback.xml";
     }

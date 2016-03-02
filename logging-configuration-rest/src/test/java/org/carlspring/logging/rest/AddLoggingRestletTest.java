@@ -75,8 +75,7 @@ public class AddLoggingRestletTest
         /** 
          * Checking that the logback.xml contains the new logger. 
          * */
-        url = client.getContextBaseUrl() + 
-		           "/logging/logger/logback";
+        url = client.getContextBaseUrl() + "/logging/logback";
 
         resource = client.getClientInstance().target(url);
 

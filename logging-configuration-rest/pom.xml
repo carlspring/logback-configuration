@@ -328,18 +328,21 @@
                         <artifactId>jetty-maven-plugin</artifactId>
 
                         <configuration>
+<!--
                             <scanIntervalSeconds>10</scanIntervalSeconds>
+-->
 
                             <daemon>true</daemon>
 
                             <webApp>
                                 <contextPath>/</contextPath>
-                                <descriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</descriptor>
+                                <descriptor>${basedir}/src/test/webapp/WEB-INF/web.xml</descriptor>
                             </webApp>
 
                             <stopPort>${port.jetty.shutdown}</stopPort>
                             <stopKey>53AS9DS1FD8E3WEFEW9GR1ER8G2ER0WE31</stopKey>
                             <stopWait>10</stopWait>
+                            <useTestClasspath>true</useTestClasspath>
 
                             <httpConnector>
                                 <port>${port.jetty.listen}</port>

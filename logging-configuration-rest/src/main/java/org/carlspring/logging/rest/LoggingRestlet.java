@@ -96,7 +96,7 @@ public class LoggingRestlet
     }
     
     @GET
-    @Path("/logger/log")
+    @Path("/log")
     public Response downloadLog()
     {
         try
@@ -111,7 +111,7 @@ public class LoggingRestlet
     }
     
     @GET
-    @Path("/logger/logback")
+    @Path("/logback")
     public Response downloadLogbackConfiguration()
     {
         try
@@ -126,12 +126,12 @@ public class LoggingRestlet
     }
     
     @POST
-    @Path("/logger/logback")
-    public Response uploadLogbackConfiguration(@QueryParam("content") String content)
+    @Path("/logback")
+    public Response uploadLogbackConfiguration(InputStream is)
     {
         try
         {
-            loggingManagementService.uploadLogbackConfiguration(content);
+            loggingManagementService.uploadLogbackConfiguration(is);
             return Response.ok().build();
         }
         catch (LoggingConfigurationException ex)

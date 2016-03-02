@@ -28,11 +28,11 @@ public interface LoggingManagementService
     InputStream downloadLogbackConfiguration() 
             throws LoggingConfigurationException;
     
-    void uploadLogbackConfiguration(String content) 
+    void uploadLogbackConfiguration(InputStream inputStream)
             throws LoggingConfigurationException;
     
     public String getPathToXml();
-    
-    public void setPathToXml(String pathToXml);
-    
+
+    public String getPathToLog();
+
 }

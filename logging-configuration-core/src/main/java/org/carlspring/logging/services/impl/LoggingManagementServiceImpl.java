@@ -2,12 +2,7 @@ package org.carlspring.logging.services.impl;
 
 import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -48,6 +43,9 @@ public class LoggingManagementServiceImpl
                                                 "TRACE");
     
     private String pathToXml;
+
+    private String pathToLog;
+
 
     @Override
     public void addLogger(String loggerPackage,
@@ -142,19 +140,19 @@ public class LoggingManagementServiceImpl
             }
         }
     }
-
     
     @Override
     public InputStream downloadLog() throws LoggingConfigurationException
     {
         try
         {
-            URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource("target/test.log");
-            File file = new File(url.toURI());
-            InputStream is = new FileInputStream(file);
-            return is;
+            // URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource("target/test.log");
+            // File file = new File(url.toURI());
+            File file = pathToLog != null ? new File(pathToLog) : new File("target/test.log");
+
+            return new FileInputStream(file);
         }
-        catch (URISyntaxException | FileNotFoundException e)
+        catch (/*URISyntaxException | */FileNotFoundException e)
         {
             throw new LoggingConfigurationException(e);
         }
@@ -164,15 +162,14 @@ public class LoggingManagementServiceImpl
     @Override
     public InputStream downloadLogbackConfiguration() throws LoggingConfigurationException
     {
-        try {
-            String path = pathToXml != null ? 
-                          pathToXml :
-                          "logback.xml";
+        try
+        {
+            String path = pathToXml != null ? pathToXml : "logback.xml";
+
             URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
             File file = new File(url.toURI());
-            
-            InputStream is = new FileInputStream(file);
-            return is;
+
+            return new FileInputStream(file);
         }
         catch (URISyntaxException | FileNotFoundException e)
         {
@@ -181,21 +178,56 @@ public class LoggingManagementServiceImpl
     }
 
     @Override
-    public void uploadLogbackConfiguration(String content) throws LoggingConfigurationException
+    public void uploadLogbackConfiguration(InputStream is)
+            throws LoggingConfigurationException
     {
-        try {
+        OutputStream fos = null;
+
+        try
+        {
             String path = pathToXml != null ? pathToXml : "logback.xml";
+
             URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
             File file = new File(url.toURI());
-    
-            try (PrintStream out = 
-                    new PrintStream(new FileOutputStream(file))) {;
-                out.println(content);
+
+            fos = new FileOutputStream(file);
+            int readLength;
+            byte[] bytes = new byte[4096];
+
+            while ((readLength = is.read(bytes, 0, bytes.length)) != -1)
+            {
+                fos.write(bytes, 0, readLength);
+                fos.flush();
             }
         }
-        catch (URISyntaxException | FileNotFoundException e)
+        catch (URISyntaxException | IOException e)
         {
             throw new LoggingConfigurationException(e);
+        }
+        finally
+        {
+            if (is != null)
+            {
+                try
+                {
+                    is.close();
+                }
+                catch (IOException e)
+                {
+                    throw new LoggingConfigurationException(e);
+                }
+            }
+            if (fos != null)
+            {
+                try
+                {
+                    fos.close();
+                }
+                catch (IOException e)
+                {
+                    throw new LoggingConfigurationException(e);
+                }
+            }
         }
     }
 
@@ -205,10 +237,19 @@ public class LoggingManagementServiceImpl
         return pathToXml;
     }
     
-    @Override
     public void setPathToXml(String pathToXml)
     {
         this.pathToXml = pathToXml;
+    }
+
+    public String getPathToLog()
+    {
+        return pathToLog;
+    }
+
+    public void setPathToLog(String pathToLog)
+    {
+        this.pathToLog = pathToLog;
     }
 
     private boolean packageLoggerExists(String packageLogger)
@@ -238,4 +279,5 @@ public class LoggingManagementServiceImpl
         Pattern pattern = Pattern.compile("^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$");
         return pattern.matcher(pkg).matches();
     }
+
 }

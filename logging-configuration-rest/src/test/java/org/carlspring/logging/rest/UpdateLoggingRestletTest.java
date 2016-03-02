@@ -1,18 +1,23 @@
 package org.carlspring.logging.rest;
 
-import static org.junit.Assert.assertEquals;
+import org.carlspring.logging.test.LogGenerator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author carlspring
@@ -50,8 +55,7 @@ public class UpdateLoggingRestletTest
     public void tearDown()
             throws Exception
     {
-        String path = "/logging/logger?" +
-                "logger=org.carlspring.logging.test";
+        String path = "/logging/logger?logger=org.carlspring.logging.test";
 
 		Response response = client.delete(path);
 		
@@ -62,7 +66,8 @@ public class UpdateLoggingRestletTest
             client.close();
         }
     }
-    
+
+    @Ignore
     @Test
     public void testUpdateLogger() throws Exception
     {
@@ -80,21 +85,47 @@ public class UpdateLoggingRestletTest
 
         assertEquals("Failed to update logger!", Response.ok().build().getStatus(), status);
 
-//        // Checking that the logback.xml contains the new logger.
-//        url = client.getContextBaseUrl() + 
-//		           "/logging/logger/logback";
-//
-//        resource = client.getClientInstance().target(url);
-//
-//        response = resource.request(MediaType.TEXT_PLAIN)
-//		                    .get();
-//
-//        status = response.getStatus();
-//        assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);
-//
-//        assertTrue(response.toString().contains("org.carlspring.logging.test"));
-        
-        // TODO: 2) Intercept the logging and check that the output is
-        // TODO:    really being printed to the respective level
+        LogGenerator generator = new LogGenerator();
+        String message = "This is an info message test!";
+        generator.info(message);
+
+        // Checking that the logback.xml contains the new logger.
+        url = client.getContextBaseUrl() + "/logging/logback";
+
+        resource = client.getClientInstance().target(url);
+        response = resource.request(MediaType.TEXT_PLAIN).get();
+
+        status = response.getStatus();
+        assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
+
+        // Checking that the logback.xml contains the new logger.
+        url = client.getContextBaseUrl() + "/logging/log";
+
+        resource = client.getClientInstance().target(url);
+        response = resource.request(MediaType.TEXT_PLAIN).get();
+
+        status = response.getStatus();
+
+        assertEquals("Failed to retrieve log file!", Response.ok().build().getStatus(), status);
+
+        InputStream bais = (InputStream) response.getEntity();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        int readLength;
+        byte[] bytes = new byte[4096];
+        while ((readLength = bais.read(bytes, 0, bytes.length)) != -1)
+        {
+            // Write the artifact
+            baos.write(bytes, 0, readLength);
+            baos.flush();
+        }
+
+        String log = new String(baos.toByteArray());
+
+        System.out.println("Retrieved log file:");
+        System.out.println(log);
+
+        assertTrue(log.contains(message));
     }
+
 }

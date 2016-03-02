@@ -3,6 +3,9 @@ package org.carlspring.logging.rest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -57,11 +60,10 @@ public class AddLoggingRestletTest
     public void testAddLogger() throws Exception
     {
         String url = client.getContextBaseUrl() +
-                     "/logging/logger?" +
-                     "logger=" + PACKAGE_NAME +
-                     "&" +
-                     "level=DEBUG&" +
-                     "appenderName=FILE";
+                "/logging/logger?" +
+                "logger=org.carlspring.logging.test&" +
+                "level=INFO&" +
+                "appenderName=CONSOLE";
 
         WebTarget resource = client.getClientInstance().target(url);
 
@@ -72,43 +74,47 @@ public class AddLoggingRestletTest
 
         assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
 
-        /** 
-         * Checking that the logback.xml contains the new logger. 
-         * */
+        LogGenerator generator = new LogGenerator();
+        String message = "This is an info message test!";
+        generator.info(message);
+        
+        // Checking that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + "/logging/logback";
 
         resource = client.getClientInstance().target(url);
-
-        response = resource.request(MediaType.TEXT_PLAIN)
-		                    .get();
+        response = resource.request(MediaType.TEXT_PLAIN).get();
 
         status = response.getStatus();
-        assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);
+        assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
 
-        assertTrue(response.readEntity(String.class).contains("org.carlspring.logging.test"));
-        
-        /**
-         * Generate log to intercept
-         * */
-//        LogGenerator logGen = new LogGenerator();
-//        logGen.debugLog();
-//        
-//        url = client.getContextBaseUrl() + 
-//		           "/logging/logger/log";
-//
-//		resource = client.getClientInstance().target(url);
-//		
-//		response = resource.request(MediaType.TEXT_PLAIN)
-//			                    .get();
-//		
-//		status = response.getStatus();
-//		assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);
-//		
-//		assertTrue(response.readEntity(String.class).contains("debug log"));
-		 
-        
-        // TODO: 2) Intercept the logging and check that the output is
-        // TODO:    really being printed to the respective level
+        // Checking that the logback.xml contains the new logger.
+        url = client.getContextBaseUrl() + "/logging/log";
+
+        resource = client.getClientInstance().target(url);
+        response = resource.request(MediaType.TEXT_PLAIN).get();
+
+        status = response.getStatus();
+
+        assertEquals("Failed to retrieve log file!", Response.ok().build().getStatus(), status);
+
+        InputStream bais = (InputStream) response.getEntity();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        int readLength;
+        byte[] bytes = new byte[4096];
+        while ((readLength = bais.read(bytes, 0, bytes.length)) != -1)
+        {
+            // Write the artifact
+            baos.write(bytes, 0, readLength);
+            baos.flush();
+        }
+
+        String log = new String(baos.toByteArray());
+
+        System.out.println("Retrieved log file:");
+        System.out.println(log);
+
+        assertTrue(log.contains(message));
     }
 
 }

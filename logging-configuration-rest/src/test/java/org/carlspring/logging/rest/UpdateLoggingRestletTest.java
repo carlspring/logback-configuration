@@ -67,7 +67,6 @@ public class UpdateLoggingRestletTest
         }
     }
 
-    @Ignore
     @Test
     public void testUpdateLogger() throws Exception
     {

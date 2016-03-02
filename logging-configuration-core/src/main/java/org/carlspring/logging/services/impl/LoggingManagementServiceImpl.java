@@ -146,13 +146,11 @@ public class LoggingManagementServiceImpl
     {
         try
         {
-            // URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource("target/test.log");
-            // File file = new File(url.toURI());
             File file = pathToLog != null ? new File(pathToLog) : new File("target/test.log");
 
             return new FileInputStream(file);
         }
-        catch (/*URISyntaxException | */FileNotFoundException e)
+        catch (FileNotFoundException e)
         {
             throw new LoggingConfigurationException(e);
         }

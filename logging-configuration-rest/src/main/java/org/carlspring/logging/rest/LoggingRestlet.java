@@ -134,16 +134,4 @@ public class LoggingRestlet
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
     }
-
-//    responseBuilder = Response.ok(is);
-//    InputStream is = new FileInputStream(file...);
-//    return responseBuilder.build();
-    // TODO: 1) Add a method for downloading the config file:
-    // TODO:      This should simply return the current logback XML configuration.
-    // TODO: 2) Add a method for uploading a config file:
-    // TODO:      This should overwrite the existing logback file and reload it.
-    // TODO: 3) Add a method for downloading the current log file.
-    // TODO:
-    // TODO: The code for all of the above should be implemented in the service class and just be called here.
-
 }

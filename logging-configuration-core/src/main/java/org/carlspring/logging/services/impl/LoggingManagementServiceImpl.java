@@ -15,6 +15,7 @@ import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
 import org.carlspring.logging.utils.LogBackXmlConfiguration;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ch.qos.logback.classic.Level;
@@ -44,7 +45,8 @@ public class LoggingManagementServiceImpl
     
     private String pathToXml;
 
-    private String pathToLog;
+    @Value("${logging.dir:logs}")
+    public String pathToLogsDir;
 
 
     @Override
@@ -142,11 +144,14 @@ public class LoggingManagementServiceImpl
     }
     
     @Override
-    public InputStream downloadLog() throws LoggingConfigurationException
+    public InputStream downloadLog(String logFilePath)
+            throws LoggingConfigurationException
     {
         try
         {
-            File file = pathToLog != null ? new File(pathToLog) : new File("target/test.log");
+            File file = new File(pathToLogsDir, logFilePath);
+
+            System.out.println("Retrieving log from " + file.getAbsolutePath());
 
             return new FileInputStream(file);
         }
@@ -240,14 +245,14 @@ public class LoggingManagementServiceImpl
         this.pathToXml = pathToXml;
     }
 
-    public String getPathToLog()
+    public String getPathToLogsDir()
     {
-        return pathToLog;
+        return pathToLogsDir;
     }
 
-    public void setPathToLog(String pathToLog)
+    public void setPathToLogsDir(String pathToLogsDir)
     {
-        this.pathToLog = pathToLog;
+        this.pathToLogsDir = pathToLogsDir;
     }
 
     private boolean packageLoggerExists(String packageLogger)

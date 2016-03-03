@@ -97,13 +97,17 @@ public class UpdateLoggingRestletTest
         status = response.getStatus();
         assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
 
+        System.out.println("Retrieving log file...");
+
         // Checking that the logback.xml contains the new logger.
-        url = client.getContextBaseUrl() + "/logging/log";
+        url = client.getContextBaseUrl() + "/logging/log/test.log";
 
         resource = client.getClientInstance().target(url);
         response = resource.request(MediaType.TEXT_PLAIN).get();
 
         status = response.getStatus();
+
+        System.out.println("Retrieved log file. Status: " + response.getStatus());
 
         assertEquals("Failed to retrieve log file!", Response.ok().build().getStatus(), status);
 

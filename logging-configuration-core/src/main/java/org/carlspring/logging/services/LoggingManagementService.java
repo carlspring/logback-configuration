@@ -22,7 +22,7 @@ public interface LoggingManagementService
     void deleteLogger(String loggerPackage)
             throws LoggingConfigurationException, LoggerNotFoundException;
     
-    InputStream downloadLog() 
+    InputStream downloadLog(String logFilePath)
             throws LoggingConfigurationException;
     
     InputStream downloadLogbackConfiguration() 
@@ -33,6 +33,6 @@ public interface LoggingManagementService
     
     public String getPathToXml();
 
-    public String getPathToLog();
+    public String getPathToLogsDir();
 
 }

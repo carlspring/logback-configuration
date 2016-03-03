@@ -88,7 +88,7 @@ public class AddLoggingRestletTest
         assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
 
         // Checking that the logback.xml contains the new logger.
-        url = client.getContextBaseUrl() + "/logging/log";
+        url = client.getContextBaseUrl() + "/logging/log/test.log";
 
         resource = client.getClientInstance().target(url);
         response = resource.request(MediaType.TEXT_PLAIN).get();

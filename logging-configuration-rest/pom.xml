@@ -328,10 +328,6 @@
                         <artifactId>jetty-maven-plugin</artifactId>
 
                         <configuration>
-<!--
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
--->
-
                             <daemon>true</daemon>
 
                             <webApp>
@@ -349,6 +345,15 @@
                             </httpConnector>
 
                             <useTestScope>true</useTestScope>
+
+                            <systemProperties>
+                                <force>true</force>
+
+                                <systemProperty>
+                                    <name>logging.dir</name>
+                                    <value>${project.build.directory}/logs</value>
+                                </systemProperty>
+                            </systemProperties>
                         </configuration>
 
                         <executions>
@@ -384,6 +389,7 @@
                             <systemPropertyVariables>
                                 <logging.host>${logging.host}</logging.host>
                                 <logging.port>${logging.port}</logging.port>
+                                <logging.dir>${project.build.directory}/logs</logging.dir>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

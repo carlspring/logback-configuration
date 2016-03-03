@@ -3,12 +3,7 @@ package org.carlspring.logging.rest;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
@@ -96,12 +91,12 @@ public class LoggingRestlet
     }
     
     @GET
-    @Path("/log")
-    public Response downloadLog()
+    @Path("/log/{path:.*}")
+    public Response downloadLog(@PathParam("path") String path)
     {
         try
         {
-            InputStream is = loggingManagementService.downloadLog();
+            InputStream is = loggingManagementService.downloadLog(path);
             return Response.ok(is).build();
         }
         catch (LoggingConfigurationException ex)

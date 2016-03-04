@@ -151,8 +151,6 @@ public class LoggingManagementServiceImpl
         {
             File file = new File(pathToLogsDir, logFilePath);
 
-            System.out.println("Retrieving log from " + file.getAbsolutePath());
-
             return new FileInputStream(file);
         }
         catch (FileNotFoundException e)

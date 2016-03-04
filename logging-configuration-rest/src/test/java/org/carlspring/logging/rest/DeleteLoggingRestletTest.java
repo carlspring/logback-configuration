@@ -22,29 +22,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
                                     "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class DeleteLoggingRestletTest
+        extends AbstractLoggingRestletTestCase
 {
-
-    private TestClient client;
 
 
     @Before
     public void setUp() throws Exception
     {
-    	client = TestClient.getTestInstance();
-        String url = client.getContextBaseUrl() +
-                "/logging/logger?" +
-                "logger=org.carlspring.logging.test&" +
-                "level=DEBUG&" +
-                "appenderName=CONSOLE";
-
-	   WebTarget resource = client.getClientInstance().target(url);
-	
-	   Response response = resource.request(MediaType.TEXT_PLAIN)
-	                               .put(Entity.entity("Add", MediaType.TEXT_PLAIN));
-	
-	   int status = response.getStatus();
-	
-	   assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
+        addLogger();
     }
 
     @After
@@ -61,7 +46,7 @@ public class DeleteLoggingRestletTest
     public void testDeleteLogger() throws Exception
     {
         String path = "/logging/logger?" +
-                      "logger=org.carlspring.logging.test&" +
+                      "logger=" + PACKAGE_NAME + "&" +
                       "level=INFO";
 
         Response response = client.delete(path);
@@ -69,8 +54,7 @@ public class DeleteLoggingRestletTest
         assertEquals("Failed to delete logger!", Response.ok().build().getStatus(), response.getStatus());
 
         // Checking that the logback.xml contains the new logger.
-        String url = client.getContextBaseUrl() + 
-		           "/logging/logback";
+        String url = client.getContextBaseUrl() + "/logging/logback";
 
         WebTarget resource = client.getClientInstance().target(url);
 
@@ -79,7 +63,7 @@ public class DeleteLoggingRestletTest
         int status = response.getStatus();
         assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);
 
-        assertFalse(response.toString().contains("org.carlspring.logging.test"));
+        assertFalse(response.toString().contains(PACKAGE_NAME));
     }
 
 }

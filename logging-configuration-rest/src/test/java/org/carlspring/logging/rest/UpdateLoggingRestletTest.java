@@ -3,7 +3,6 @@ package org.carlspring.logging.rest;
 import org.carlspring.logging.test.LogGenerator;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,36 +25,21 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
                                     "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class UpdateLoggingRestletTest
+    extends AbstractLoggingRestletTestCase
 {
-
-    private TestClient client;
 
 
     @Before
     public void setUp() throws Exception
     {
-        client = TestClient.getTestInstance();
-        String url = client.getContextBaseUrl() +
-                "/logging/logger?" +
-                "logger=org.carlspring.logging.test&" +
-                "level=DEBUG&" +
-                "appenderName=CONSOLE";
-
-	   WebTarget resource = client.getClientInstance().target(url);
-	
-	   Response response = resource.request(MediaType.TEXT_PLAIN)
-	                               .put(Entity.entity("Add", MediaType.TEXT_PLAIN));
-	
-	   int status = response.getStatus();
-	
-	   assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
+        addLogger();
 	}
 
     @After
     public void tearDown()
             throws Exception
     {
-        String path = "/logging/logger?logger=org.carlspring.logging.test";
+        String path = "/logging/logger?logger=" + PACKAGE_NAME;
 
 		Response response = client.delete(path);
 		
@@ -72,7 +56,7 @@ public class UpdateLoggingRestletTest
     {
         String url = client.getContextBaseUrl() +
                      "/logging/logger?" +
-                     "logger=org.carlspring.logging.test&" +
+                     "logger=" + PACKAGE_NAME + "&" +
                      "level=INFO";
 
         WebTarget resource = client.getClientInstance().target(url);

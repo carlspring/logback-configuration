@@ -26,11 +26,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "/META-INF/spring/logging-*-context.xml",
                                     "classpath*:/META-INF/spring/logging-*-context.xml" })
 public class AddLoggingRestletTest
+        extends AbstractLoggingRestletTestCase
 {
-
-    public static final String PACKAGE_NAME = "org.carlspring.logging.test";
-    
-    private TestClient client;
 
 
     @Before
@@ -43,13 +40,12 @@ public class AddLoggingRestletTest
     public void tearDown()
             throws Exception
     {
-        String path = "/logging/logger?" +
-                "logger=" + PACKAGE_NAME;
+        String path = "/logging/logger?logger=" + PACKAGE_NAME;
 
 		Response response = client.delete(path);
-		
+
 		assertEquals("Failed to delete logger!", Response.ok().build().getStatus(), response.getStatus());
-		
+
         if (client != null)
         {
             client.close();
@@ -60,10 +56,10 @@ public class AddLoggingRestletTest
     public void testAddLogger() throws Exception
     {
         String url = client.getContextBaseUrl() +
-                "/logging/logger?" +
-                "logger=org.carlspring.logging.test&" +
-                "level=INFO&" +
-                "appenderName=CONSOLE";
+                     "/logging/logger?" +
+                     "logger=" + PACKAGE_NAME + "&" +
+                     "level=INFO&" +
+                     "appenderName=CONSOLE";
 
         WebTarget resource = client.getClientInstance().target(url);
 

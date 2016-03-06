@@ -28,6 +28,10 @@
             <name>Martin Todorov</name>
             <email>carlspring@gmail.com</email>
         </developer>
+        <developer>
+            <name>Yougeshwar Khatri</name>
+            <email>ypkkhatri@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
@@ -69,8 +73,8 @@
 
                 <configuration>
                     <debug>true</debug>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

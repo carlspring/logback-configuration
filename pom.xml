@@ -28,6 +28,10 @@
             <name>Martin Todorov</name>
             <email>carlspring@gmail.com</email>
         </developer>
+        <developer>
+            <name>Yougeshwar Khatri</name>
+            <email>ypkkhatri@gmail.com</email>
+        </developer>
     </developers>
 
     <inceptionYear>2016</inceptionYear>

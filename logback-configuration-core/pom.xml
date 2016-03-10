@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.carlspring.logging</groupId>
-    <artifactId>logging-configuration-core</artifactId>
+    <artifactId>logback-configuration-core</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Logging Configuration: Core</name>
     <description>A logback configuration library.</description>
 
-    <url>https://github.com/carlspring/logging-configuration</url>
+    <url>https://github.com/carlspring/logback-configuration</url>
 
     <licenses>
         <license>

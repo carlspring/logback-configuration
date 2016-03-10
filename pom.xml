@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.carlspring.logging</groupId>
-    <artifactId>logging-configuration</artifactId>
+    <artifactId>logback-configuration</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Logging Configuration: Masterbuild</name>
     <description>A logback configuration library.</description>
 
-    <url>https://github.com/carlspring/logging-configuration</url>
+    <url>https://github.com/carlspring/logback-configuration</url>
 
     <licenses>
         <license>
@@ -41,14 +41,14 @@
     </properties>
     
     <modules>
-        <module>logging-configuration-core</module>
-        <module>logging-configuration-rest</module>
+        <module>logback-configuration-core</module>
+        <module>logback-configuration-rest</module>
     </modules>
     
     <scm>
-        <connection>scm:git:git@github.com:carlspring/logging-configuration.git</connection>
-        <url>scm:git:git@github.com:carlspring/logging-configuration.git</url>
-        <developerConnection>scm:git:git@github.com:carlspring/logging-configuration.git</developerConnection>
+        <connection>scm:git:git@github.com:carlspring/logback-configuration.git</connection>
+        <url>scm:git:git@github.com:carlspring/logback-configuration.git</url>
+        <developerConnection>scm:git:git@github.com:carlspring/logback-configuration.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.carlspring.logging</groupId>
-    <artifactId>logging-configuration-rest</artifactId>
+    <artifactId>logback-configuration-rest</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Logging Configuration: REST API</name>
     <description>A REST API for the logback configuration library.</description>
 
-    <url>https://github.com/carlspring/logging-configuration</url>
+    <url>https://github.com/carlspring/logback-configuration</url>
 
     <licenses>
         <license>
@@ -112,7 +112,7 @@
     <dependencies>
         <dependency>
             <groupId>org.carlspring.logging</groupId>
-            <artifactId>logging-configuration-core</artifactId>
+            <artifactId>logback-configuration-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

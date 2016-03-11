@@ -58,7 +58,7 @@ public class DeleteLoggingRestletTest
 
         WebTarget resource = client.getClientInstance().target(url);
 
-        response = resource.request(MediaType.TEXT_PLAIN).get();
+        response = resource.request(MediaType.APPLICATION_XML).get();
 
         int status = response.getStatus();
         assertEquals("Failed to get log file!", Response.ok().build().getStatus(), status);

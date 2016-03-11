@@ -78,7 +78,7 @@ public class AddLoggingRestletTest
         url = client.getContextBaseUrl() + "/logging/logback";
 
         resource = client.getClientInstance().target(url);
-        response = resource.request(MediaType.TEXT_PLAIN).get();
+        response = resource.request(MediaType.APPLICATION_XML).get();
 
         status = response.getStatus();
         assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);

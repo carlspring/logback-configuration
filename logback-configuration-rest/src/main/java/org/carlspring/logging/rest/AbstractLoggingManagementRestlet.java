@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.carlspring.logging.exceptions.AppenderNotFoundException;
@@ -95,6 +96,7 @@ public class AbstractLoggingManagementRestlet
     }
     
     @GET
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("/log/{path:.*}")
     public Response downloadLog(@PathParam("path") String path)
     {
@@ -111,6 +113,7 @@ public class AbstractLoggingManagementRestlet
     
     @GET
     @Path("/logback")
+    @Produces(MediaType.APPLICATION_XML)
     public Response downloadLogbackConfiguration()
     {
         try
@@ -138,4 +141,5 @@ public class AbstractLoggingManagementRestlet
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
     }
+
 }

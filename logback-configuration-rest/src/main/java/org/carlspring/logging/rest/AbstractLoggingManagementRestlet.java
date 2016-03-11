@@ -14,12 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * This restlet provides a simple wrapper over REST API for the LoggingManagementService.
+ *
+ * This class does not have a @Path annotation, so that it could be
+ * sub-classed and be much more easily configured.
+ *
  * @author Martin Todorov
  * @author Yougeshwar
  */
 @Component
-@Path("/logging")
-public class LoggingRestlet
+public class AbstractLoggingManagementRestlet
 {
 
     @Autowired

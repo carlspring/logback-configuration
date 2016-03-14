@@ -36,7 +36,7 @@ public class LoggingManagementServiceImpl
 
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(LoggingManagementServiceImpl.class);
 
-    private Object lock = new Object();
+    private final Object lock = new Object();
 
     private List<String> asList = Arrays.asList("ALL",
                                                 "DEBUG",
@@ -172,24 +172,7 @@ public class LoggingManagementServiceImpl
 
             dumpLoggingProperties();
 
-            File file;
-            URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
-            if (url != null)
-            {
-                logger.debug("Resolved the Logback configuration class from the classpath (" + url.toURI() + ").");
-
-                file = new File(url.toURI());
-            }
-            else
-            {
-                file = new File(path);
-                if (!file.exists())
-                {
-                    throw new FileNotFoundException("Failed to locate the Logback configuration file!");
-                }
-
-                logger.debug("Resolved the Logback configuration class from the file system (" + file.getAbsolutePath() + ").");
-            }
+            File file = resolveLogbackConfigurationFile(path);
 
             logger.debug("Downloading configuration file " + file.getAbsolutePath() + "...");
 
@@ -215,8 +198,7 @@ public class LoggingManagementServiceImpl
 
             String path = pathToXml != null ? pathToXml : "logback.xml";
 
-            URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
-            File file = new File(url.toURI());
+            File file = resolveLogbackConfigurationFile(path);
 
             fos = new FileOutputStream(file);
             int readLength;
@@ -242,6 +224,29 @@ public class LoggingManagementServiceImpl
             close(is);
             close(fos);
         }
+    }
+
+    private File resolveLogbackConfigurationFile(String path) throws URISyntaxException, FileNotFoundException
+    {
+        File file;
+        URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
+        if (url != null)
+        {
+            logger.debug("Resolved the Logback configuration class from the classpath (" + url.toURI() + ").");
+
+            file = new File(url.toURI());
+        }
+        else
+        {
+            file = new File(path);
+            if (!file.exists())
+            {
+                throw new FileNotFoundException("Failed to locate the Logback configuration file!");
+            }
+
+            logger.debug("Resolved the Logback configuration class from the file system (" + file.getAbsolutePath() + ").");
+        }
+        return file;
     }
 
     @Override

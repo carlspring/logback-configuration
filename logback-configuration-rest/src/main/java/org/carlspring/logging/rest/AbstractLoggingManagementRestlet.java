@@ -126,7 +126,7 @@ public class AbstractLoggingManagementRestlet
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
     }
-    
+
     @POST
     @Path("/logback")
     public Response uploadLogbackConfiguration(InputStream is)
@@ -140,6 +140,47 @@ public class AbstractLoggingManagementRestlet
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
+    }
+
+    @POST
+    @Path("/log/{path:.*}")
+    public Response download(@PathParam("path") String path, @QueryParam("offset") long offset)
+    {
+        try
+        {
+            InputStream is = loggingManagementService.downloadLog(path);
+            is.skip(offset);
+
+            Response.ResponseBuilder responseBuilder = prepareResponseBuilderForPartialRequest(is, offset);
+            responseBuilder.status(Response.Status.PARTIAL_CONTENT);
+
+            return responseBuilder.build();
+        }
+        catch (IOException ex)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
+        catch (LoggingConfigurationException ex)
+        {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+        }
+    }
+
+
+    private Response.ResponseBuilder prepareResponseBuilderForPartialRequest(InputStream is, long offset)
+            throws LoggingConfigurationException
+    {
+        Response.ResponseBuilder responseBuilder = Response.ok(is).status(Response.Status.PARTIAL_CONTENT);
+        try {
+            responseBuilder.header("Accept-Range", "bytes");
+            responseBuilder.header("Content-Length", is.available());
+            responseBuilder.header("Content-Range", "bytes " + offset + "-" + (is.available() - 1) + "/" + is.available());
+        }
+        catch (IOException ex)
+        {
+            throw new LoggingConfigurationException(ex);
+        }
+        return responseBuilder;
     }
 
 }

@@ -1,16 +1,5 @@
 package org.carlspring.logging.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.carlspring.logging.test.LogGenerator;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +7,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author carlspring
@@ -33,7 +33,7 @@ public class TailFileLoggingRestletTest
     @Before
     public void setUp() throws Exception
     {
-        client = TestClient.getTestInstance();
+        addLogger();
     }
 
     @After
@@ -53,64 +53,67 @@ public class TailFileLoggingRestletTest
     }
 
     @Test
-    public void testAddLogger() throws Exception
+    public void testTailFileLogger() throws Exception
     {
-        String url = client.getContextBaseUrl() +
-                     "/logging/logger?" +
-                     "logger=" + PACKAGE_NAME + "&" +
-                     "level=INFO&" +
-                     "appenderName=CONSOLE";
+        // Generating log 1st time to get only new log
+        LogGenerator generator = new LogGenerator();
+        String message = "This is an log message test!";
+        generator.info(message);
 
+        // Checking that the logback.xml contains the new logger.
+        String url = client.getContextBaseUrl() + "/logging/partial-log/test.log?offset=0";
+
+        Object[] objs = getLogOnRequest(url);
+
+        String log = (String) objs[0];
+        byte[] data = (byte[]) objs[1];
+
+        System.out.println("Bytes-Length: " + data.length);
+        System.out.println("Retrieved log file:");
+        System.out.println(log);
+
+        assertTrue(log.contains(message));
+
+        // Generating log 2nd time to get only new log
+        url = client.getContextBaseUrl() + "/logging/partial-log/test.log?offset=" + data.length;
+        message = "This is an new log message test!";
+        generator.info(message);
+
+        objs = getLogOnRequest(url);
+        log = (String) objs[0];
+        data = (byte[]) objs[1];
+
+        System.out.println("Bytes-Length: " + data.length);
+        System.out.println("2nd Retrieved log file:");
+        System.out.println(log);
+
+        assertTrue(log.contains(message));
+    }
+
+    private Object[] getLogOnRequest(String url) throws IOException {
         WebTarget resource = client.getClientInstance().target(url);
-
-        Response response = resource.request(MediaType.TEXT_PLAIN)
-                                    .put(Entity.entity("Add", MediaType.TEXT_PLAIN));
+        Response response = resource.request(MediaType.TEXT_PLAIN).get();
 
         int status = response.getStatus();
-
-        assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
-
-        LogGenerator generator = new LogGenerator();
-        String message = "This is an info message test!";
-        generator.info(message);
-        
-        // Checking that the logback.xml contains the new logger.
-        url = client.getContextBaseUrl() + "/logging/logback";
-
-        resource = client.getClientInstance().target(url);
-        response = resource.request(MediaType.APPLICATION_XML).get();
-
-        status = response.getStatus();
-        assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
-
-        // Checking that the logback.xml contains the new logger.
-        url = client.getContextBaseUrl() + "/logging/log/test.log";
-
-        resource = client.getClientInstance().target(url);
-        response = resource.request(MediaType.TEXT_PLAIN).get();
-
-        status = response.getStatus();
 
         assertEquals("Failed to retrieve log file!", Response.ok().build().getStatus(), status);
 
         InputStream bais = (InputStream) response.getEntity();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         int readLength;
-        byte[] bytes = new byte[4096];
+        byte[] bytes = new byte[bais.available()];
         while ((readLength = bais.read(bytes, 0, bytes.length)) != -1)
         {
-            // Write the artifact
+            // Write the stream
             baos.write(bytes, 0, readLength);
             baos.flush();
         }
 
         String log = new String(baos.toByteArray());
 
-        System.out.println("Retrieved log file:");
-        System.out.println(log);
-
-        assertTrue(log.contains(message));
+        return new Object[]{log, baos.toByteArray()};
     }
 
 }

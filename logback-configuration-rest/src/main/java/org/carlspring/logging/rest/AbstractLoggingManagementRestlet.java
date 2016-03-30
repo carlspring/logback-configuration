@@ -142,19 +142,22 @@ public class AbstractLoggingManagementRestlet
         }
     }
 
-    @POST
-    @Path("/log/{path:.*}")
-    public Response download(@PathParam("path") String path, @QueryParam("offset") long offset)
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/partial-log/{path:.*}")
+    public Response partialLogDownload(@PathParam("path") String path, @QueryParam("offset") long offset)
     {
         try
         {
             InputStream is = loggingManagementService.downloadLog(path);
             is.skip(offset);
 
-            Response.ResponseBuilder responseBuilder = prepareResponseBuilderForPartialRequest(is, offset);
-            responseBuilder.status(Response.Status.PARTIAL_CONTENT);
-
-            return responseBuilder.build();
+            return Response.ok(is).build();
+//            Response.ResponseBuilder responseBuilder = prepareResponseBuilderForPartialRequest(is, offset);
+////            responseBuilder.header("Content-Length", is.available());
+//            responseBuilder.status(Response.Status.PARTIAL_CONTENT);
+//
+//            return responseBuilder.build();
         }
         catch (IOException ex)
         {
@@ -166,21 +169,16 @@ public class AbstractLoggingManagementRestlet
         }
     }
 
-
-    private Response.ResponseBuilder prepareResponseBuilderForPartialRequest(InputStream is, long offset)
-            throws LoggingConfigurationException
+    private Response.ResponseBuilder prepareResponseBuilderForPartialRequest(InputStream ais, long offset)
+            throws IOException
     {
-        Response.ResponseBuilder responseBuilder = Response.ok(is).status(Response.Status.PARTIAL_CONTENT);
-        try {
-            responseBuilder.header("Accept-Range", "bytes");
-            responseBuilder.header("Content-Length", is.available());
-            responseBuilder.header("Content-Range", "bytes " + offset + "-" + (is.available() - 1) + "/" + is.available());
-        }
-        catch (IOException ex)
-        {
-            throw new LoggingConfigurationException(ex);
-        }
+        Response.ResponseBuilder responseBuilder = Response.ok(ais).status(Response.Status.PARTIAL_CONTENT);
+        responseBuilder.header("Accept-Ranges", "bytes");
+//         responseBuilder.header("Content-Length", ais.getLength());
+        responseBuilder.header("Content-Range", "bytes " + offset + "-" + (ais.available() - 1) + "/" + ais.available());
+        responseBuilder.header("Content-Type", ais.available());
+        responseBuilder.header("Pragma", "no-cache");
+
         return responseBuilder;
     }
-
 }

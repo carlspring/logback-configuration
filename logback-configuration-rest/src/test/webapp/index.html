@@ -4,7 +4,7 @@
 <title>Tail file</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" href="../../css/bootstrap.css" />
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap-theme.css}" href="../../css/bootstrap-theme.css"/>
-    <link rel="stylesheet" th:href="@{/css/application.css}" href="../../static/css/application.css" />
+    <link rel="stylesheet" th:href="@{/css/application.css}" href="static/css/application.css" />
     <script th:src="@{/webjars/angularjs/1.5.2/angular.min.js}" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js" > </script>
     <!--<script th:inline="javascript">-->
         <!--/*<![CDATA[*/-->
@@ -33,7 +33,7 @@
 	</div>
 	<div class="container-fluid">
 		<div>
-			<div ng-app="tailFilesApp" ng-controller="TailFilesCtrl">
+			<div ng-app="tailFilesApp" ng-controller="TailFilesController">
                 <div class="row">
                     <div class="col-xs-12">
                         <h4>Tailing file: <span th:text="${filename}">test.txt</span></h4>

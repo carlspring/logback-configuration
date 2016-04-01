@@ -41,11 +41,7 @@ public class AbstractLoggingManagementRestlet
         {
             loggingManagementService.addLogger(loggerPackage, level, appenderName);
         }
-        catch (LoggingConfigurationException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (AppenderNotFoundException ex)
+        catch (LoggingConfigurationException | AppenderNotFoundException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
@@ -159,11 +155,7 @@ public class AbstractLoggingManagementRestlet
 //
 //            return responseBuilder.build();
         }
-        catch (IOException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (LoggingConfigurationException ex)
+        catch (IOException | LoggingConfigurationException ex)
         {
             return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
         }
@@ -181,4 +173,5 @@ public class AbstractLoggingManagementRestlet
 
         return responseBuilder;
     }
+
 }

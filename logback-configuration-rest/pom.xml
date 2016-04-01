@@ -352,6 +352,8 @@
                                 <descriptor>${basedir}/src/test/webapp/WEB-INF/web.xml</descriptor>
                             </webApp>
 
+                            <webAppSourceDirectory>${basedir}/src/test/webapp</webAppSourceDirectory>
+
                             <stopPort>${port.jetty.shutdown}</stopPort>
                             <stopKey>53AS9DS1FD8E3WEFEW9GR1ER8G2ER0WE31</stopKey>
                             <stopWait>10</stopWait>

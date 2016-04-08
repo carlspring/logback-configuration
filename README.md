@@ -1,4 +1,4 @@
-This is an API for configuring logback programatically.
+This is an API for configuring logback programmatically.
 
 Currently, the implementation contains:
 * A service layer (using Spring) located in the logback-configuration-core module which provides methods to:
@@ -9,4 +9,4 @@ Currently, the implementation contains:
  * Resolve the Logback configuration file
  * Upload a Logback configuration file and reload it
 
-* A simple REST implementation (using Jersey) located in the logback-configuration-rest module which provies a wrapper for the above-mentioned service.
+* A simple REST implementation (using Jersey) located in the logback-configuration-rest module which provides a wrapper for the above-mentioned service.

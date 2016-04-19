@@ -53,6 +53,8 @@ public class DeleteLoggingRestletTest
 
         assertEquals("Failed to delete logger!", Response.ok().build().getStatus(), response.getStatus());
 
+        resetClient();
+
         // Checking that the logback.xml contains the new logger.
         String url = client.getContextBaseUrl() + "/logging/logback";
 

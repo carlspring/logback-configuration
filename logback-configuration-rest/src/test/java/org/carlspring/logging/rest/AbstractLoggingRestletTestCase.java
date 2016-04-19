@@ -37,6 +37,12 @@ public abstract class AbstractLoggingRestletTestCase
         assertEquals("Failed to add logger!", Response.ok().build().getStatus(), status);
     }
 
+    public void resetClient()
+    {
+        client.close();
+        client = TestClient.getTestInstance();
+    }
+
     public TestClient getClient()
     {
         return client;

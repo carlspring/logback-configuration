@@ -9,6 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -59,35 +60,43 @@ public class UpdateLoggingRestletTest
                      "logger=" + PACKAGE_NAME + "&" +
                      "level=INFO";
 
-        WebTarget resource = client.getClientInstance().target(url);
-
-        Response response = resource.request(MediaType.TEXT_PLAIN)
-                                    .post(Entity.entity("Update", MediaType.TEXT_PLAIN));
+        // 1) Update the logger
+        WebTarget target = client.getClientInstance().target(url);
+        Response response = target.request(MediaType.TEXT_PLAIN)
+                                  .post(Entity.entity("Update", MediaType.TEXT_PLAIN));
 
         int status = response.getStatus();
 
         assertEquals("Failed to update logger!", Response.ok().build().getStatus(), status);
 
+        System.out.println(response.getStatus());
+        System.out.println(response.readEntity(String.class));
+
+        // 2) Generate an info message
         LogGenerator generator = new LogGenerator();
         String message = "This is an info message test!";
         generator.info(message);
 
-        // Checking that the logback.xml contains the new logger.
+        resetClient();
+
+        // 3) Check that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + "/logging/logback";
 
-        resource = client.getClientInstance().target(url);
-        response = resource.request(MediaType.APPLICATION_XML).get();
+        target = client.getClientInstance().target(url);
+        response = target.request(MediaType.APPLICATION_XML).get();
 
         status = response.getStatus();
         assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
 
+        resetClient();
+
+        // 4) Get the log file and check that it's not empty
         System.out.println("Retrieving log file...");
 
-        // Checking that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + "/logging/log/test.log";
 
-        resource = client.getClientInstance().target(url);
-        response = resource.request(MediaType.TEXT_PLAIN).get();
+        target = client.getClientInstance().target(url);
+        response = target.request(/*MediaType.TEXT_PLAIN*/).get();
 
         status = response.getStatus();
 

@@ -11,6 +11,8 @@ import org.carlspring.logging.exceptions.AppenderNotFoundException;
 import org.carlspring.logging.exceptions.LoggerNotFoundException;
 import org.carlspring.logging.exceptions.LoggingConfigurationException;
 import org.carlspring.logging.services.LoggingManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +23,13 @@ import org.springframework.stereotype.Component;
  * sub-classed and be much more easily configured.
  *
  * @author Martin Todorov
- * @author Yougeshwar
+ * @author Yougeshwar Khatri
  */
 @Component
 public class AbstractLoggingManagementRestlet
 {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLoggingManagementRestlet.class);
 
     @Autowired
     private LoggingManagementService loggingManagementService;
@@ -33,6 +37,7 @@ public class AbstractLoggingManagementRestlet
 
     @PUT
     @Path("/logger")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response addLogger(@QueryParam("logger") String loggerPackage,
                               @QueryParam("level") String level,
                               @QueryParam("appenderName") String appenderName)
@@ -40,74 +45,97 @@ public class AbstractLoggingManagementRestlet
         try
         {
             loggingManagementService.addLogger(loggerPackage, level, appenderName);
-        }
-        catch (LoggingConfigurationException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (AppenderNotFoundException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
 
-        return Response.ok().build();
+            return Response.ok("The logger was added successfully.").build();
+        }
+        catch (LoggingConfigurationException | AppenderNotFoundException e)
+        {
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to add logger!")
+                           .build();
+        }
     }
 
     @POST
     @Path("/logger")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response updateLogger(@QueryParam("logger") String loggerPackage,
                                  @QueryParam("level") String level)
     {
         try
         {
             loggingManagementService.updateLogger(loggerPackage, level);
-        }
-        catch (LoggingConfigurationException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (LoggerNotFoundException ex)
-        {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
 
-        return Response.ok().build();
+            return Response.ok("The logger was updated successfully.").build();
+        }
+        catch (LoggingConfigurationException e)
+        {
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to update logger!")
+                           .build();
+        }
+        catch (LoggerNotFoundException e)
+        {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("Logger '" + loggerPackage + "' not found!")
+                           .build();
+        }
     }
 
     @DELETE
     @Path("/logger")
-    public Response delete(@QueryParam("logger") String loggerPackage)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteLogger(@QueryParam("logger") String loggerPackage)
             throws IOException
     {
         try
         {
             loggingManagementService.deleteLogger(loggerPackage);
-        }
-        catch (LoggingConfigurationException ex)
-        {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
-        }
-        catch (LoggerNotFoundException ex)
-        {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
 
-        return Response.ok().build();
+            return Response.ok("The logger was deleted successfully.").build();
+        }
+        catch (LoggingConfigurationException e)
+        {
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to delete the logger!")
+                           .build();
+        }
+        catch (LoggerNotFoundException e)
+        {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity("Logger '" + loggerPackage + "' not found!")
+                           .build();
+        }
     }
     
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("/log/{path:.*}")
+    @Produces(MediaType.TEXT_PLAIN)
     public Response downloadLog(@PathParam("path") String path)
     {
         try
         {
+            System.out.println("Received a request to retrieve log file " + path + ".");
+
             InputStream is = loggingManagementService.downloadLog(path);
+
+            System.out.println("Received a request to retrieve log file " + path + ".");
+
             return Response.ok(is).build();
         }
-        catch (LoggingConfigurationException ex)
+        catch (LoggingConfigurationException e)
         {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to resolve the log!")
+                           .build();
         }
     }
     
@@ -121,24 +149,35 @@ public class AbstractLoggingManagementRestlet
             InputStream is = loggingManagementService.downloadLogbackConfiguration();
             return Response.ok(is).build();
         }
-        catch (LoggingConfigurationException ex)
+        catch (LoggingConfigurationException e)
         {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to resolve the logging configuration!")
+                           .build();
         }
     }
     
     @POST
     @Path("/logback")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response uploadLogbackConfiguration(InputStream is)
     {
         try
         {
             loggingManagementService.uploadLogbackConfiguration(is);
-            return Response.ok().build();
+
+            return Response.ok("Logback configuration uploaded successfully.").build();
         }
-        catch (LoggingConfigurationException ex)
+        catch (LoggingConfigurationException e)
         {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getMessage()).build();
+            logger.trace(e.getMessage(), e);
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity("Failed to resolve the logging configuration!")
+                           .build();
         }
     }
 

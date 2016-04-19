@@ -73,7 +73,9 @@ public class AddLoggingRestletTest
         LogGenerator generator = new LogGenerator();
         String message = "This is an info message test!";
         generator.info(message);
-        
+
+        resetClient();
+
         // Checking that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + "/logging/logback";
 
@@ -82,6 +84,8 @@ public class AddLoggingRestletTest
 
         status = response.getStatus();
         assertEquals("Failed to get logback config file!", Response.ok().build().getStatus(), status);
+
+        resetClient();
 
         // Checking that the logback.xml contains the new logger.
         url = client.getContextBaseUrl() + "/logging/log/test.log";

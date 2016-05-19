@@ -9,4 +9,4 @@ Currently, the implementation contains:
  * Resolve the Logback configuration file
  * Upload a Logback configuration file and reload it
 
-* A simple REST implementation (using Jersey) located in the logback-configuration-rest module which provies a wrapper for the above-mentioned service.
+* A simple REST implementation (using Jersey) located in the logback-configuration-rest module which provides a wrapper for the above-mentioned service.

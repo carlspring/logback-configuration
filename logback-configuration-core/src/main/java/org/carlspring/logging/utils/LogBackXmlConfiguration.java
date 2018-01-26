@@ -1,28 +1,32 @@
 package org.carlspring.logging.utils;
 
-import java.io.File;
-import java.net.URL;
-import java.util.List;
+import org.carlspring.logging.*;
+import org.carlspring.logging.exceptions.AppenderNotFoundException;
+import org.carlspring.logging.exceptions.LoggerNotFoundException;
+import org.carlspring.logging.exceptions.LoggingConfigurationException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
-import org.carlspring.logging.Appender;
-import org.carlspring.logging.AppenderRef;
-import org.carlspring.logging.Configuration;
-import org.carlspring.logging.Logger;
-import org.carlspring.logging.ObjectFactory;
-import org.carlspring.logging.exceptions.AppenderNotFoundException;
-import org.carlspring.logging.exceptions.LoggerNotFoundException;
-import org.carlspring.logging.exceptions.LoggingConfigurationException;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Yougeshwar
+ * @author Pablo Tirado
  */
 public class LogBackXmlConfiguration
 {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LogBackXmlConfiguration.class);
     
     private String pathToXml;
     
@@ -183,8 +187,7 @@ public class LogBackXmlConfiguration
     {
         try
         {
-            URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
-            File file = new File(url.toURI());
+            File file = resolveLogbackConfigurationFile(this.pathToXml);
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -208,8 +211,7 @@ public class LogBackXmlConfiguration
     {
         try
         {
-            URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
-            File file = new File(url.toURI());
+            File file = resolveLogbackConfigurationFile(this.pathToXml);
 
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
 
@@ -222,5 +224,29 @@ public class LogBackXmlConfiguration
         {
             throw new LoggingConfigurationException(ex);
         }
+    }
+
+    public static File resolveLogbackConfigurationFile(String pathToXml)
+            throws URISyntaxException, FileNotFoundException
+    {
+        Path path;
+        URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
+        if (url != null)
+        {
+            LOGGER.debug("Resolved the Logback configuration class from the classpath ({}).", url.toURI());
+
+            path = Paths.get(url.toURI());
+        }
+        else
+        {
+            path = Paths.get(pathToXml);
+            if (!path.toFile().exists())
+            {
+                throw new FileNotFoundException("Failed to locate the Logback configuration file!");
+            }
+
+            LOGGER.debug("Resolved the Logback configuration class from the file system ({}).", path.toAbsolutePath());
+        }
+        return path.toFile();
     }
 }

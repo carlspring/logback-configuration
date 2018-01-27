@@ -16,18 +16,19 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import static org.carlspring.logging.utils.LogBackXmlConfiguration.resolveLogbackConfigurationFile;
 import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 
 /**
  * @author mtodorov
  * @author Yougeshwar
+ * @author Pablo Tirado
  */
 @Service
 public class LoggingManagementServiceImpl
@@ -224,29 +225,6 @@ public class LoggingManagementServiceImpl
             close(is);
             close(fos);
         }
-    }
-
-    private File resolveLogbackConfigurationFile(String path) throws URISyntaxException, FileNotFoundException
-    {
-        File file;
-        URL url = LoggingManagementServiceImpl.class.getClassLoader().getResource(path);
-        if (url != null)
-        {
-            logger.debug("Resolved the Logback configuration class from the classpath (" + url.toURI() + ").");
-
-            file = new File(url.toURI());
-        }
-        else
-        {
-            file = new File(path);
-            if (!file.exists())
-            {
-                throw new FileNotFoundException("Failed to locate the Logback configuration file!");
-            }
-
-            logger.debug("Resolved the Logback configuration class from the file system (" + file.getAbsolutePath() + ").");
-        }
-        return file;
     }
 
     @Override

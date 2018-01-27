@@ -26,16 +26,14 @@ import org.slf4j.LoggerFactory;
 public class LogBackXmlConfiguration
 {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LogBackXmlConfiguration.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(LogBackXmlConfiguration.class);
     
     private String pathToXml;
     
     public LogBackXmlConfiguration(String pathToXml)
     {
         this.pathToXml = pathToXml;
-        this.pathToXml = pathToXml != null ? 
-                    pathToXml :
-                    "logback.xml";
+        this.pathToXml = pathToXml != null ? pathToXml : "logback.xml";
     }
 
     public void addLogger(String packageName, String levelName, String appenderName)
@@ -233,7 +231,7 @@ public class LogBackXmlConfiguration
         URL url = LogBackXmlConfiguration.class.getClassLoader().getResource(pathToXml);
         if (url != null)
         {
-            LOGGER.debug("Resolved the Logback configuration class from the classpath ({}).", url.toURI());
+            logger.debug("Resolved the Logback configuration class from the classpath ({}).", url.toURI());
 
             path = Paths.get(url.toURI());
         }
@@ -245,8 +243,10 @@ public class LogBackXmlConfiguration
                 throw new FileNotFoundException("Failed to locate the Logback configuration file!");
             }
 
-            LOGGER.debug("Resolved the Logback configuration class from the file system ({}).", path.toAbsolutePath());
+            logger.debug("Resolved the Logback configuration class from the file system ({}).", path.toAbsolutePath());
         }
+        
         return path.toFile();
     }
+    
 }

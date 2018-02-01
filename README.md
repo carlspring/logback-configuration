@@ -1,3 +1,7 @@
+# logback-configuration
+
+[![Known Vulnerabilities](https://snyk.io/test/github/carlspring/logback-configuration/badge.svg)](https://snyk.io/test/github/carlspring/logback-configuration/)
+
 This is an API for configuring logback programatically.
 
 Currently, the implementation contains:

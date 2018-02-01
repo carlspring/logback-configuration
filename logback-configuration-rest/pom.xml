@@ -44,7 +44,7 @@
         <version.slf4j>1.7.24</version.slf4j>
         <version.logback>1.2.3</version.logback>
 
-        <version.spring>4.2.0.RELEASE</version.spring>
+        <version.spring>4.2.2.RELEASE</version.spring>
     </properties>
 
     <build>
@@ -126,7 +126,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5</version>
+            <version>4.5.3</version>
             <scope>test</scope>
             <exclusions>
                 <!-- Exclude Commons Logging -->

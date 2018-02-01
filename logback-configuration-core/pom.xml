@@ -37,9 +37,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <version.jcl>1.7.7</version.jcl>
-        <version.slf4j>1.7.7</version.slf4j>
-        <version.logback>1.1.2</version.logback>
+        <version.jcl>1.7.25</version.jcl>
+        <version.slf4j>1.7.24</version.slf4j>
+        <version.logback>1.2.3</version.logback>
 
         <version.spring>4.2.4.RELEASE</version.spring>
     </properties>
@@ -172,7 +172,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -1,5 +1,6 @@
 # logback-configuration
 
+[![Master Build Status](https://dev.carlspring.org/jenkins/buildStatus/icon?job=opensource/logback-configuration/master)](https://dev.carlspring.org/jenkins/blue/organizations/jenkins/opensource%2Flogback-configuration/activity?branch=master)
 [![Known Vulnerabilities](https://snyk.io/test/github/carlspring/logback-configuration/badge.svg)](https://snyk.io/test/github/carlspring/logback-configuration/)
 
 This is an API for configuring logback programatically.

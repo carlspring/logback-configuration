@@ -7,53 +7,51 @@ def SERVER_URL = 'https://dev.carlspring.org/nexus/content/repositories/carlspri
 pipeline {
     agent {
         docker {
-            args '-v /mnt/ramdisk/3:/home/jenkins --privileged=true'
-            image 'hub.carlspring.org/jenkins/opensuse-slave:latest'
+            args  '-v /tmp/.m2:/tmp/.m2'
+            image 'strongboxci/alpine:jdk8-mvn-3.5'
         }
     }
     options {
         timeout(time: 2, unit: 'HOURS')
         disableConcurrentBuilds()
-        skipDefaultCheckout()
     }
     stages {
-        stage('Preparing')
-        {
-            steps {
-                script {
-                    cleanWs deleteDirs: true
-                    checkout scm
-                }
-            }
-        }
         stage('Building...')
         {
             steps {
-                withMaven(maven: 'maven-3.3.9', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833')
+                withMaven(maven: 'maven-3.5', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833', mavenLocalRepo: '/tmp/.m2')
                 {
-                    sh "mvn -U clean install"
+                    sh "mvn -U clean install -Dmaven.test.failure.ignore=true"
                 }
             }
         }
         stage('Code Analysis') {
             steps {
-                withMaven(maven: 'maven-3.3.9', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833')
+                withMaven(maven: 'maven-3.5', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833', mavenLocalRepo: '/tmp/.m2')
                 {
                     script {
-                        if(BRANCH_NAME.startsWith("PR-"))
-                        {
+                        if(env.BRANCH_NAME == 'master') {
                             withSonarQubeEnv('sonar') {
-                                def PR_NUMBER = env.CHANGE_ID
-                                echo "Triggering sonar analysis in comment-only mode for PR: ${PR_NUMBER}."
-                                sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar " +
-                                   "-Dsonar.github.repository=${REPO_NAME} " +
-                                   "-Dsonar.github.pullRequest=${PR_NUMBER} " +
-                                   "-Psonar-github"
+                                // requires SonarQube Scanner for Maven 3.2+
+                                sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar"
                             }
                         }
-                        else
-                        {
-                            echo "This step is skipped for branches other than PR-*"
+                        else {
+                            if(env.BRANCH_NAME.startsWith("PR-"))
+                            {
+                                withSonarQubeEnv('sonar') {
+                                    def PR_NUMBER = env.CHANGE_ID
+                                    echo "Triggering sonar analysis in comment-only mode for PR: ${PR_NUMBER}."
+                                    sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar" +
+                                       " -Psonar-github" +
+                                       " -Dsonar.github.repository=${REPO_NAME}" +
+                                       " -Dsonar.github.pullRequest=${PR_NUMBER}"
+                                }
+                            }
+                            else
+                            {
+                                echo "This step is skipped for branches other than master or PR-*"
+                            }
                         }
                     }
                 }
@@ -65,23 +63,15 @@ pipeline {
             }
             steps {
                 script {
-                    withMaven(maven: 'maven-3.3.9', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833')
+                    withMaven(maven: 'maven-3.5', mavenSettingsConfig: 'a5452263-40e5-4d71-a5aa-4fc94a0e6833', mavenLocalRepo: '/tmp/.m2')
                     {
-                        sh "mvn deploy -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
+                        sh "mvn deploy -Dmaven.test.skip=true -DaltDeploymentRepository=${SERVER_ID}::default::${SERVER_URL}"
                     }
                 }
             }
         }
     }
     post {
-        changed {
-            script {
-                if(BRANCH_NAME == 'master') {
-                    def skype = new org.carlspring.jenkins.notification.skype.Skype()
-                    skype.sendNotification("admins;devs");
-                }
-            }
-        }
         always {
             // Email notification
             script {

@@ -44,7 +44,7 @@
         <version.slf4j>1.7.24</version.slf4j>
         <version.logback>1.2.3</version.logback>
 
-        <version.spring>4.2.2.RELEASE</version.spring>
+        <version.spring>4.2.4.RELEASE</version.spring>
     </properties>
 
     <build>

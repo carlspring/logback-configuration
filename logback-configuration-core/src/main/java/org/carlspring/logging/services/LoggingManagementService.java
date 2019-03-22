@@ -16,9 +16,9 @@ public interface LoggingManagementService
     /**
      * Adds a logger with the specified level and appender.
      *
-     * @param loggerPackage
-     * @param level
-     * @param appenderName
+     * @param loggerPackage     The logger package
+     * @param level             The logging level
+     * @param appenderName      The name of the appender
      * @throws LoggingConfigurationException
      * @throws AppenderNotFoundException
      */
@@ -28,8 +28,8 @@ public interface LoggingManagementService
     /**
      * Updates an existing logger.
      *
-     * @param loggerPackage
-     * @param level
+     * @param loggerPackage     The logger package
+     * @param level             The logging level
      * @throws LoggingConfigurationException
      * @throws LoggerNotFoundException
      */
@@ -39,7 +39,7 @@ public interface LoggingManagementService
     /**
      * Deletes a logger.
      *
-     * @param loggerPackage
+     * @param loggerPackage     The logger package
      * @throws LoggingConfigurationException
      * @throws LoggerNotFoundException
      */
@@ -49,7 +49,7 @@ public interface LoggingManagementService
     /**
      * This method resolves an InputStream to a log file.
      *
-     * @param logFilePath
+     * @param logFilePath       The path to the log file.
      * @return
      * @throws LoggingConfigurationException
      */
@@ -59,7 +59,7 @@ public interface LoggingManagementService
     /**
      * This method resolves an InputStream to the logback configuration file.
      *
-     * @return
+     * @return                  Returns the contents of the configuration file.
      * @throws LoggingConfigurationException
      */
     InputStream downloadLogbackConfiguration() 
@@ -68,14 +68,14 @@ public interface LoggingManagementService
     /**
      * This method overwrites the existing logback configuration file with a specified one.
      *
-     * @param inputStream
+     * @param inputStream       The input stream of the configuration file to be uploqaded.
      * @throws LoggingConfigurationException
      */
     void uploadLogbackConfiguration(InputStream inputStream)
             throws LoggingConfigurationException;
     
-    public String getPathToXml();
+    String getPathToXml();
 
-    public String getPathToLogsDir();
+    String getPathToLogsDir();
 
 }

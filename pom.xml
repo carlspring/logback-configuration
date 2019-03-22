@@ -34,12 +34,37 @@
         </developer>
     </developers>
 
-    <inceptionYear>2016</inceptionYear>
+    <inceptionYear>2019</inceptionYear>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.11.0</version>
+                <configuration>
+                    <gitFlowConfig>
+                        <developmentBranch>master</developmentBranch>
+                    </gitFlowConfig>
+                    <commitMessages>
+                        <!--
+                            The release finish message specifically does not have a [release], so that Jenkins
+                            will build the new development version.
+                          -->
+                        <releaseFinishMessage>[release] Set the next development version.</releaseFinishMessage>
+                        <releaseFinishMergeMessage>[release] Merge branch release/@{version}</releaseFinishMergeMessage>
+                        <tagReleaseMessage>[release] Tag release</tagReleaseMessage>
+                        <releaseFinishMergeMessage>[release] Merge branch 'release/@{version}'</releaseFinishMergeMessage>
+                    </commitMessages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <modules>
         <module>logback-configuration-core</module>
         <module>logback-configuration-rest</module>
@@ -65,15 +90,29 @@
 
     <profiles>
         <profile>
-            <id>gpg</id>
-
+            <id>sign-artifacts</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -81,6 +120,15 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <keyname>${gpg.keyid}</keyname>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                        <arg>--passphrase-file</arg>
+                                        <arg>${gpg.passfile}</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

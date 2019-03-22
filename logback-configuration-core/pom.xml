@@ -121,27 +121,6 @@
                     <mavenExecutorId>forked-path</mavenExecutorId>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>com.amashchenko.maven.plugin</groupId>
-                <artifactId>gitflow-maven-plugin</artifactId>
-                <version>1.11.0</version>
-                <configuration>
-                    <gitFlowConfig>
-                        <developmentBranch>master</developmentBranch>
-                    </gitFlowConfig>
-                    <commitMessages>
-                        <!--
-                            The release finish message specifically does not have a [release], so that Jenkins
-                            will build the new development version.
-                          -->
-                        <releaseFinishMessage>[release] Set the next development version.</releaseFinishMessage>
-                        <releaseFinishMergeMessage>[release] Merge branch release/@{version}</releaseFinishMergeMessage>
-                        <tagReleaseMessage>[release] Tag release</tagReleaseMessage>
-                        <releaseFinishMergeMessage>[release] Merge branch 'release/@{version}'</releaseFinishMergeMessage>
-                    </commitMessages>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

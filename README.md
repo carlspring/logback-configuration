@@ -1,9 +1,19 @@
 # logback-configuration
 
-[![Master Build Status](https://dev.carlspring.org/jenkins/buildStatus/icon?job=opensource/logback-configuration/master)](https://dev.carlspring.org/jenkins/blue/organizations/jenkins/opensource%2Flogback-configuration/activity?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/carlspring/logback-configuration/badge.svg)](https://snyk.io/test/github/carlspring/logback-configuration/)
-[![Maven Central Release][http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-core/]][https://img.shields.io/maven-central/v/org.carlspring.logging/logging-configuration-core.svg]
-[![Maven Central Release][http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-rest/]][https://img.shields.io/maven-central/v/org.carlspring.logging/configuration-rest.svg]
+[![Master Build Status][build-badge]][build-link]
+[![Known Vulnerabilities][vulnerabilities-badge]][vulnerabilities-link]
+[![Maven Central Release][release-core-badge]][release-core-link]
+[![Maven Central Release][release-rest-badge]][release-rest-link]
+
+[build-link]: https://jenkins.carlspring.org/blue/organizations/jenkins/opensource%2Flogback-configuration/activity?branch=master
+[build-badge]: https://jenkins.carlspring.org/buildStatus/icon?job=opensource/logback-configuration/master
+[vulnerabilities-link]: https://snyk.io/test/github/carlspring/logback-configuration/
+[vulnerabilities-badge]: https://snyk.io/test/github/carlspring/logback-configuration/badge.svg
+[release-core-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-core/
+[release-core-badge]: https://img.shields.io/maven-central/v/org.carlspring.logging/logback-configuration-core.svg?label=logback-configuration-core
+[release-rest-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-rest/
+[release-rest-badge]: https://img.shields.io/maven-central/v/org.carlspring.logging/logback-configuration-rest.svg?label=logback-configuration-rest
+
 
 This is an API for configuring logback programatically.
 

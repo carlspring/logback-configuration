@@ -2,6 +2,8 @@
 
 [![Master Build Status](https://dev.carlspring.org/jenkins/buildStatus/icon?job=opensource/logback-configuration/master)](https://dev.carlspring.org/jenkins/blue/organizations/jenkins/opensource%2Flogback-configuration/activity?branch=master)
 [![Known Vulnerabilities](https://snyk.io/test/github/carlspring/logback-configuration/badge.svg)](https://snyk.io/test/github/carlspring/logback-configuration/)
+[![Maven Central Release][http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-core/]][https://img.shields.io/maven-central/v/org.carlspring.logging/logging-configuration-core.svg]
+[![Maven Central Release][http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-rest/]][https://img.shields.io/maven-central/v/org.carlspring.logging/configuration-rest.svg]
 
 This is an API for configuring logback programatically.
 

@@ -44,6 +44,13 @@
         <version.spring>5.1.5.RELEASE</version.spring>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:carlspring/logback-configuration.git</connection>
+        <url>scm:git:git@github.com:carlspring/logback-configuration.git</url>
+        <developerConnection>scm:git:git@github.com:carlspring/logback-configuration.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <build>
         <resources>
             <resource>

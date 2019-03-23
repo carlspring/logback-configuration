@@ -58,9 +58,8 @@
                         <releaseFinishMessage>[release] Set the next development version.</releaseFinishMessage>
                         <releaseFinishMergeMessage>[release] Merge branch release/@{version}</releaseFinishMergeMessage>
                         <tagReleaseMessage>[release] Tag release</tagReleaseMessage>
-                        <releaseFinishMergeMessage>[release] Merge branch 'release/@{version}'</releaseFinishMergeMessage>
-                        <allowSnapshots>false</allowSnapshots>
                     </commitMessages>
+                    <allowSnapshots>false</allowSnapshots>
                 </configuration>
             </plugin>
         </plugins>

@@ -59,7 +59,7 @@
                         <releaseFinishMergeMessage>[release] Merge branch release/@{version}</releaseFinishMergeMessage>
                         <tagReleaseMessage>[release] Tag release</tagReleaseMessage>
                         <releaseFinishMergeMessage>[release] Merge branch 'release/@{version}'</releaseFinishMergeMessage>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <allowSnapshots>false</allowSnapshots>
                     </commitMessages>
                 </configuration>
             </plugin>

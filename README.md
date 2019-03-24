@@ -9,9 +9,9 @@
 [build-badge]: https://jenkins.carlspring.org/buildStatus/icon?job=opensource/logback-configuration/master
 [vulnerabilities-link]: https://snyk.io/test/github/carlspring/logback-configuration/
 [vulnerabilities-badge]: https://snyk.io/test/github/carlspring/logback-configuration/badge.svg
-[release-core-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-core/
+[release-core-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logback-configuration-core/
 [release-core-badge]: https://img.shields.io/maven-central/v/org.carlspring.logging/logback-configuration-core.svg?label=logback-configuration-core
-[release-rest-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logging-configuration-rest/
+[release-rest-link]: http://repo2.maven.org/maven2/org/carlspring/logging/logback-configuration-rest/
 [release-rest-badge]: https://img.shields.io/maven-central/v/org.carlspring.logging/logback-configuration-rest.svg?label=logback-configuration-rest
 
 
